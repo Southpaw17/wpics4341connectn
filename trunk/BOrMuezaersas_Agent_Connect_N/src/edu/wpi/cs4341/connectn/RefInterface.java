@@ -22,7 +22,7 @@ public class RefInterface{
 	private int timeLimit;				//Time limit in milliseconds
 	private BufferedReader input;
 	private Timer moveExpiration;
-	private Thread currentCalc;
+	private CNThread currentCalc;
 	private MoveCalculator calc;
 	
 	/**
@@ -30,11 +30,10 @@ public class RefInterface{
 	 * @author Ryan O'Meara
 	 */
 	class TimeExpiration extends TimerTask{
-		@SuppressWarnings("deprecation")
 		@Override
 		public void run() {
 			//stop thread
-	        if(currentCalc != null){currentCalc.stop();}
+	        if(currentCalc != null){currentCalc.CNstop();}
 	        
 	        // send move
 			int moveValue = 0;
@@ -67,7 +66,7 @@ public class RefInterface{
 		
 		moveExpiration = new Timer();
 		currentCalc = null;
-		calc = new MoveCalculator();
+		calc = new MoveCalculator(height, width);
 	}
 	
 	/**
@@ -85,9 +84,15 @@ public class RefInterface{
                 }
             	
                 //start thread
-                //TODO get thread object from run method of MoveCalc -> currentCalc
+                currentCalc = calc.run();
             	
                 //wait on started thread
+                try {
+					currentCalc.join();
+				} catch (Exception e) {
+					System.err.println(ConnectNAgent.AGENT_NAME + " crashed joining calc thread.  Stack Trace:");
+					e.printStackTrace(System.err);
+				}
             } else {
             	int moveValue;
             	
