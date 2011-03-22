@@ -1,15 +1,57 @@
 package edu.wpi.cs4341.connectn;
 
-public class MoveCalculator implements Runnable{
+public class MoveCalculator {
 
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
+	State gameState;
+	
+	public MoveCalculator( int row, int col ) {
+		int[][] temp = new int[row][col];
 		
+		for (int i = 0; i < row; i++)
+			for (int j = 0; j < col; j++)
+				temp[i][j] = 0;
+		
+		gameState = new State( temp );
+	}
+	
+	public CNThread run() {
+		
+		CNThread currentThread = new CNThread();
+		currentThread.run();
+		
+		return currentThread;
 	}
 
 	// TODO NEED PUBLIC REGISTER_MOVE FUNCTION
 	// TODO NEED GetCurrentBestMove() FUNCTION
+	
+	public void recieveMove( int col, int player) {
+		gameState = gameState.makeMove( col, player );
+	}
+}
+
+class CNThread extends Thread {
+	
+	private boolean canRun;
+	
+	public CNThread() {
+		super();
+		
+		canRun = true;
+	}
+	
+	@Override
+	public void run() {
+		
+		while ( canRun )
+		{
+			// TODO This is where the thread does stuff.  This should be as short as possible so canRun gets checked often
+		}
+	}
+	
+	public void CNstop() {
+		canRun = false;
+	}
 }
 
 // This class stores the state of a game 
@@ -56,10 +98,10 @@ class State {
 	 * to the move calculator to determine which should be persued
 	 * further.
 	 */
-	public void makeBabies() {
+	public void makeBabies( int player ) {
 		
-		for (int i = 0; i < state[][].length(); i++) {
-			children[i] = makeMove( i );
+		for (int i = 0; i < state[0].length; i++) {
+			children[i] = makeMove( i, player * -1 );
 		}
 		
 		calculateHeuristic();	// recalculates the heuristic for this state based on the heuristic values of its children
@@ -71,8 +113,8 @@ class State {
 	 * @param col - the column that the move will be placed in
 	 * @return - returns true if the move is legal (column has at least one empty space), false if the column is full
 	 */
-	public bool checkMove( int col ) {
-		if (state[state[].length() - 1][col] == 0)
+	public boolean checkMove( int col ) {
+		if (state[state.length - 1][col] == 0)
 			return true;
 		
 		return false;
@@ -84,16 +126,16 @@ class State {
 	 * @param col - the column the move will be made in
 	 * @return - returns the state which would exist if the move was made, returns null if the move was illegal (i.e. the column was already full)
 	 */
-	public State makeMove( int col ) {
+	public State makeMove( int col, int player ) {
 		if ( !checkMove( col ) )
 			return null;
 		
 		int[][] moved = state;
 		
-		for (int i = 0, i < moved[].length(); i++) {
+		for (int i = 0; i < moved.length; i++) {
 			if ( moved[i][col] == 0 )
 			{
-				moved[i][col] = 1;		// TODO update to create a value based on which player's turn it is
+				moved[i][col] = player;		// TODO update to create a value based on which player's turn it is
 				break;
 			}
 		}
