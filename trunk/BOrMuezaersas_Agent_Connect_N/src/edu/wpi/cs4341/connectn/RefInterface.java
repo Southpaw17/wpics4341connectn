@@ -109,7 +109,7 @@ public class RefInterface{
                 if (moveValue < 0){break;}
                 
                 //Record move
-                //TODO send opponent move
+                calc.recieveMove(moveValue, currentPlayer);
             }
 
             // switch turns
