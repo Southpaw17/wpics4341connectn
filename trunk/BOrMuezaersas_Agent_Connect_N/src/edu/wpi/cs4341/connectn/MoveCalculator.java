@@ -13,7 +13,7 @@ public class MoveCalculator implements Runnable{
 }
 
 // This class stores the state of a game 
-private class State {
+class State {
 	
 	private int[][] state;		// stores the state
 	private State[] children;	// stores the children of this state
