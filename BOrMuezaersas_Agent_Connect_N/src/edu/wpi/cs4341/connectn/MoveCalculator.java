@@ -25,6 +25,12 @@ public class MoveCalculator {
 	// TODO NEED PUBLIC REGISTER_MOVE FUNCTION
 	// TODO NEED GetCurrentBestMove() FUNCTION
 	
+	/*
+	 * Receives a move and updates the state
+	 * 
+	 *  @param col		 - the column the move is made in
+	 *  @param player	 - which player made the move
+	 */
 	public void recieveMove( int col, int player) {
 		gameState = gameState.makeMove( col, player );
 	}
