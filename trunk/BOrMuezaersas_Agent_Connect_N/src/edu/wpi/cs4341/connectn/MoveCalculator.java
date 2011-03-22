@@ -31,10 +31,10 @@ class State {
 	public State( int[][] newstate ) {
 		state = newstate;
 		
-		CalculateHeuristic();
+		calculateHeuristic();
 	}
 	
-	private void CalculateHeuristic(){
+	private void calculateHeuristic(){
 		// TODO add functionality to base heuristic on children
 		
 		heuristic = 5;
@@ -45,7 +45,7 @@ class State {
 	 * 
 	 * @return returns the heuristic
 	 */
-	public int GetHeuristic() {
+	public int getHeuristic() {
 		return heuristic;
 	}
 	
@@ -56,10 +56,48 @@ class State {
 	 * to the move calculator to determine which should be persued
 	 * further.
 	 */
-	public void MakeBabies() {
-		// TODO create children and store them in the array
+	public void makeBabies() {
 		
-		CalculateHeuristic();	// recalculates the heuristic for this state based on the heuristic values of its children
+		for (int i = 0; i < state[][].length(); i++) {
+			children[i] = makeMove( i );
+		}
+		
+		calculateHeuristic();	// recalculates the heuristic for this state based on the heuristic values of its children
 	}
 	
+	/*
+	 * Determines if a given move is legal
+	 * 
+	 * @param col - the column that the move will be placed in
+	 * @return - returns true if the move is legal (column has at least one empty space), false if the column is full
+	 */
+	public bool checkMove( int col ) {
+		if (state[state[].length() - 1][col] == 0)
+			return true;
+		
+		return false;
+	}
+	
+	/*
+	 * Makes a move in a given column
+	 * 
+	 * @param col - the column the move will be made in
+	 * @return - returns the state which would exist if the move was made, returns null if the move was illegal (i.e. the column was already full)
+	 */
+	public State makeMove( int col ) {
+		if ( !checkMove( col ) )
+			return null;
+		
+		int[][] moved = state;
+		
+		for (int i = 0, i < moved[].length(); i++) {
+			if ( moved[i][col] == 0 )
+			{
+				moved[i][col] = 1;		// TODO update to create a value based on which player's turn it is
+				break;
+			}
+		}
+		
+		return new State( moved );
+	}
 }
