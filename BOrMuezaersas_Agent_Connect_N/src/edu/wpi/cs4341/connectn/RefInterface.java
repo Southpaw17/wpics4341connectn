@@ -23,6 +23,7 @@ public class RefInterface{
 	private BufferedReader input;
 	private Timer moveExpiration;
 	private Thread currentCalc;
+	private MoveCalculator calc;
 	
 	/**
 	 * TimerTask which makes the agent send moves on time
@@ -66,6 +67,7 @@ public class RefInterface{
 		
 		moveExpiration = new Timer();
 		currentCalc = null;
+		calc = new MoveCalculator();
 	}
 	
 	/**
@@ -100,6 +102,9 @@ public class RefInterface{
 
                 // check for end
                 if (moveValue < 0){break;}
+                
+                //Record move
+                //TODO send opponent move
             }
 
             // switch turns
