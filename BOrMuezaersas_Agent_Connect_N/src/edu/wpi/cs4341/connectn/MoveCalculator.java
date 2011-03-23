@@ -104,7 +104,7 @@ class State {
 			}
 		}
 		
-		heuristic = 5;
+		heuristic = 5;		// TODO ...
 	}
 	
 	private int[] calcConnectionsFromLocation( int startCol, int startRow, int p)
@@ -242,7 +242,7 @@ class State {
 	 * @return - returns true if the move is legal (column has at least one empty space), false if the column is full
 	 */
 	public boolean checkMove( int col ) {
-		if (state[state.length - 1][col] == 0)
+		if (state[col][state[0].length - 1] == 0)
 			return true;
 		
 		return false;
@@ -261,9 +261,9 @@ class State {
 		int[][] moved = state;
 		
 		for (int i = 0; i < moved.length; i++) {
-			if ( moved[i][col] == 0 )
+			if ( moved[col][i] == 0 )
 			{
-				moved[i][col] = player;		
+				moved[col][i] = player;		
 				break;
 			}
 		}
