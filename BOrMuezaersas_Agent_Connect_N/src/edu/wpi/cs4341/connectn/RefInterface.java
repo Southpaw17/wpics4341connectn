@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.wpi.cs4341.connectn.MoveCalculator.CNThread;
+
 /**
  * Class which interfaces with the referee to send and receive moves and trigger the generation of moves
  * 
