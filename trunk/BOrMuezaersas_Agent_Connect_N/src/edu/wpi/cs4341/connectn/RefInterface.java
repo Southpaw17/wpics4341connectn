@@ -35,10 +35,13 @@ public class RefInterface{
 			//stop thread
 	        if(currentCalc != null){currentCalc.CNstop();}
 	        
-	        // send move
-			int moveValue = 0;
+	        //Get move
+			int moveValue = calc.getCurrentBestMove();
+			//Register our move with us
+	        calc.recieveMove(moveValue, PLAYER);
+	        //Send move
 	        System.out.println(String.valueOf(moveValue));
-	        System.out.flush();
+	        System.out.flush();     
 		}
 	}
 	
@@ -66,7 +69,7 @@ public class RefInterface{
 		
 		moveExpiration = new Timer();
 		currentCalc = null;
-		calc = new MoveCalculator(height, width);
+		calc = new MoveCalculator(height, width, n);  
 	}
 	
 	/**
