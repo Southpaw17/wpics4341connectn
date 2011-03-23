@@ -3,15 +3,17 @@ package edu.wpi.cs4341.connectn;
 public class MoveCalculator {
 
 	State gameState;
+	static int numConnect;
 	
-	public MoveCalculator( int row, int col ) {
+	public MoveCalculator( int row, int col, int n ) {
 		int[][] temp = new int[col][row];
 		
 		for (int i = 0; i < row; i++)
 			for (int j = 0; j < col; j++)
 				temp[j][i] = 0;
 		
-		gameState = new State( temp );
+		gameState = new State( temp, RefInterface.PLAYER );
+		numConnect = n;
 	}
 	
 	public CNThread run() {
@@ -68,6 +70,7 @@ class State {
 	private int[][] state;		// stores the state
 	private State[] children;	// stores the children of this state
 	private int heuristic;		// stores the heuristic value of this state
+	private int player;			// stores the player whose perspective to take this from
 	
 	public State( ) {
 		
@@ -78,9 +81,10 @@ class State {
 	 * 
 	 * @param newstate - the state you want this state to store and evaluate
 	 */
-	public State( int[][] newstate ) {
+	public State( int[][] newstate , int p) {
 		state = newstate;
 		children = new State[state.length];
+		player = p;
 		
 		calculateHeuristic();
 	}
@@ -88,34 +92,122 @@ class State {
 	private void calculateHeuristic(){
 		// TODO add functionality to base heuristic on children
 		
-		int num2us = 0;
-		int num3us = 0;
-		int num2them = 0;
-		int num3them = 0;
+		int[] us;
+		int[] them;
 		
 		for ( int col = 0; col < state.length; col++ )
 		{
 			for ( int row = 0; row < state[0].length; row++ )
 			{
-				switch ( state[col][row] ) {
-				case 0:
-					break;
-				case RefInterface.PLAYER:
-					calcConnectionsFromLocation( col, row, RefInterface.PLAYER );
-					break;
-				case RefInterface.OPPONENT:
-					break;
-						
-				}
+				us = calcConnectionsFromLocation( col, row, player );
+				them = calcConnectionsFromLocation( col, row, -player );
 			}
 		}
 		
 		heuristic = 5;
 	}
 	
-	private void calcConnectionsFromLocation( int startCol, int startRow, int player)
+	private int[] calcConnectionsFromLocation( int startCol, int startRow, int p)
 	{
+		int sequence = 0;
+		int[] retarr = new int[3];
 		
+		retarr[0] = 0;
+		retarr[1] = 0;
+		retarr[2] = 0;
+		
+		for ( int col = startCol; col < startCol + MoveCalculator.numConnect - 1; col++ ) {
+			for ( int row = startRow; row < startRow + MoveCalculator.numConnect - 1; row++ ) {
+				if ( col >= state.length || row >= state[0].length || state[col][row] == -p) {
+					col = startCol + MoveCalculator.numConnect - 1;
+					sequence = 0;
+					break;
+				}
+				
+				if (state[col][row] == p)
+				{
+					sequence++;
+				}
+			}
+		}
+		
+		if ( sequence == MoveCalculator.numConnect - 2 )
+			retarr[0]++;
+		else if ( sequence == MoveCalculator.numConnect - 1 )
+			retarr[1]++;
+		else if (sequence == MoveCalculator.numConnect )
+			retarr[2]++;
+		
+		sequence = 0;
+		
+		for ( int col = startCol; col < startCol + MoveCalculator.numConnect - 1; col++ ) {
+				
+			if ( col >= state.length || state[col][startRow] == -p) {
+				sequence = 0;
+				break;
+			}
+				
+			if (state[col][startRow] == p)
+			{
+				sequence++;
+			}
+		}
+		
+		if ( sequence == MoveCalculator.numConnect - 2 )
+			retarr[0]++;
+		else if ( sequence == MoveCalculator.numConnect - 1 )
+			retarr[1]++;
+		else if (sequence == MoveCalculator.numConnect )
+			retarr[2]++;
+		
+		sequence = 0;
+		
+
+		for ( int row = startRow; row < startRow + MoveCalculator.numConnect - 1; row++ ) {
+			if ( row >= state[0].length || state[startCol][row] == -p) {
+				sequence = 0;
+				break;
+			}
+				
+			if (state[startCol][row] == p)
+			{
+				sequence++;
+			}
+		}
+
+		
+		if ( sequence == MoveCalculator.numConnect - 2 )
+			retarr[0]++;
+		else if ( sequence == MoveCalculator.numConnect - 1 )
+			retarr[1]++;
+		else if (sequence == MoveCalculator.numConnect )
+			retarr[2]++;
+		
+		sequence = 0;
+		
+		for ( int col = startCol; col < startCol + MoveCalculator.numConnect - 1; col++ ) {
+			for ( int row = startRow; row > startRow - (MoveCalculator.numConnect - 1); row-- ) {
+				if ( col >= state.length || row <= 0 || state[col][row] == -p) {
+					col = startCol + MoveCalculator.numConnect - 1;
+					sequence = 0;
+					break;
+				}
+				
+				if (state[col][row] == p)
+				{
+					sequence++;
+				}
+			}
+		}
+		
+		if ( sequence == MoveCalculator.numConnect - 2 )
+			retarr[0]++;
+		else if ( sequence == MoveCalculator.numConnect - 1 )
+			retarr[1]++;
+		else if (sequence == MoveCalculator.numConnect )
+			retarr[2]++;
+		
+		return retarr;
 	}
 	
 	/**
@@ -134,10 +226,10 @@ class State {
 	 * to the move calculator to determine which should be persued
 	 * further.
 	 */
-	public void makeBabies( int player ) {
+	public void makeBabies( ) {
 		
 		for (int i = 0; i < state[0].length; i++) {
-			children[i] = makeMove( i, player * -1 );
+			children[i] = makeMove( i, -player );
 		}
 		
 		calculateHeuristic();	// recalculates the heuristic for this state based on the heuristic values of its children
@@ -171,11 +263,11 @@ class State {
 		for (int i = 0; i < moved.length; i++) {
 			if ( moved[i][col] == 0 )
 			{
-				moved[i][col] = player;		// TODO update to create a value based on which player's turn it is
+				moved[i][col] = player;		
 				break;
 			}
 		}
 		
-		return new State( moved );
+		return new State( moved, player );
 	}
 }
