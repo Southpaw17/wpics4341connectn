@@ -5,11 +5,11 @@ public class MoveCalculator {
 	State gameState;
 	
 	public MoveCalculator( int row, int col ) {
-		int[][] temp = new int[row][col];
+		int[][] temp = new int[col][row];
 		
 		for (int i = 0; i < row; i++)
 			for (int j = 0; j < col; j++)
-				temp[i][j] = 0;
+				temp[j][i] = 0;
 		
 		gameState = new State( temp );
 	}
@@ -22,8 +22,10 @@ public class MoveCalculator {
 		return currentThread;
 	}
 
-	// TODO NEED PUBLIC REGISTER_MOVE FUNCTION
-	// TODO NEED GetCurrentBestMove() FUNCTION
+	// TODO NEED getCurrentBestMove() FUNCTION
+	public int getCurrentBestMove() {
+		return 0;
+	}
 	
 	/*
 	 * Receives a move and updates the state
@@ -78,6 +80,7 @@ class State {
 	 */
 	public State( int[][] newstate ) {
 		state = newstate;
+		children = new State[state.length];
 		
 		calculateHeuristic();
 	}
@@ -85,7 +88,34 @@ class State {
 	private void calculateHeuristic(){
 		// TODO add functionality to base heuristic on children
 		
+		int num2us = 0;
+		int num3us = 0;
+		int num2them = 0;
+		int num3them = 0;
+		
+		for ( int col = 0; col < state.length; col++ )
+		{
+			for ( int row = 0; row < state[0].length; row++ )
+			{
+				switch ( state[col][row] ) {
+				case 0:
+					break;
+				case RefInterface.PLAYER:
+					calcConnectionsFromLocation( col, row, RefInterface.PLAYER );
+					break;
+				case RefInterface.OPPONENT:
+					break;
+						
+				}
+			}
+		}
+		
 		heuristic = 5;
+	}
+	
+	private void calcConnectionsFromLocation( int startCol, int startRow, int player)
+	{
+		
 	}
 	
 	/**
