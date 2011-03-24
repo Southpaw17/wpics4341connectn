@@ -11,8 +11,12 @@ public class MoveCalculator {
 
 	private BoardState gameState;			//The current state of the game
 	private static int currentBestMove;
+	private int width;
+	public static final int NO_HEURISTIC = -10000;
+	public static final int MAX_HEURISTIC = 9999;
 	
 	public MoveCalculator( int row, int col, int n ) {
+		width = col;
 		int[][] temp = new int[col][row];
 		
 		for (int i = 0; i < row; i++)
@@ -21,7 +25,7 @@ public class MoveCalculator {
 		
 		currentBestMove = 0;
 		
-		gameState = new BoardState(temp, RefInterface.PLAYER);
+		gameState = new BoardState(temp, n, RefInterface.PLAYER, -1);
 	}
 	
 	/** 
@@ -55,6 +59,7 @@ public class MoveCalculator {
 		
 		private boolean canRun;
 		private ArrayList<BoardState> states;
+		private int currentLevel;
 		
 		public CNThread(BoardState gameState) {
 			super();
@@ -62,6 +67,7 @@ public class MoveCalculator {
 			canRun = true;
 			states = new ArrayList<BoardState>();
 			states.add(gameState);
+			currentLevel = gameState.getLevel();
 		}
 		
 		@Override
@@ -71,12 +77,60 @@ public class MoveCalculator {
 			firstmove = isEmptyBoard();
 			
 			while (canRun){
-				// TODO This is where the thread does stuff.  This should be as short as possible so canRun gets checked often
 				//Pick state to expand next
-			
 				//expand state (or just get its children if expanded previously)
-				
 				//if all states on this level expanded, prune
+				if((states.get(0) != null)&&(currentLevel <= states.get(0).getLevel())){
+					if(!states.get(0).isPruned()){
+						states.get(0).makeBabies();
+						BoardState[] expandedStates = states.get(0).getChildren();
+						if(expandedStates != null){
+							for(int i = 0; i < expandedStates.length; i++){
+								states.add(expandedStates[i]);
+							}
+						}
+					}
+					
+					states.remove(states.get(0));
+				}else{
+					//TODO improve prune
+					int mean = 0;
+					int stdev = -1;
+					
+					boolean loop = true;	
+					int i = 0;
+					
+					while(loop){
+						if(states.get(i) == null){
+							states.remove(i);
+							continue;
+						}
+						
+						if(states.get(i).getLevel() > currentLevel){
+							if(stdev == -1){
+								mean /= (i-1);
+								i = 0;
+								stdev = 0;
+							}
+							else{loop = false;}	
+						}
+						
+						if(stdev == -1){
+							mean += states.get(i).getIndHeuristic();
+						}else{
+							stdev = Math.abs(states.get(i).getIndHeuristic() - mean);
+						}
+						
+					}
+					
+					stdev /= (i-1);
+					
+					for(int j = 0; j < i; j++){
+						if((states.get(j) != null)&&(states.get(j).getIndHeuristic() < (mean - stdev))){
+							states.get(j).prune();
+						}
+					}
+				}
 				
 				//if the move hasn't already been decided (first move given to us)
 				if(firstmove == -1){
@@ -84,16 +138,42 @@ public class MoveCalculator {
 					//this should amount to comparing global hueristics
 					int currentChoice = -1;
 					
-					//TODO loop through the GLOBAL heuristics of the game state's children and find max
+					//loop through the GLOBAL heuristics of the game state's children and find max
+					BoardState[] states = gameState.getChildren();
+					
+					if(states != null){
+						int currentHeuristic = NO_HEURISTIC;
+						
+						for(int i = 0; i < states.length; i++){
+							if((states[i] != null)&&(!states[i].isPruned())){
+								if(currentHeuristic < states[i].getGlobalHeuristic()){
+									currentChoice = states[i].getAddedCol();
+								}
+							}
+						}
+					}
 					
 					if(currentChoice == -1){
-						//TODO loop through game state "moves" and see if any legal, otherwise set = 0
+						//loop through game state "moves" and see if any legal, otherwise set = 0
+						BoardState[] moves = gameState.getChildren();
+						
+						if(moves != null){
+							for(int i = 0; i < moves.length; i++){
+								if(moves[i] != null){
+									currentChoice = moves[i].getAddedCol();
+								}
+							}
+						}
+						
+						currentChoice = 0;
 					}
 					
 					currentBestMove = currentChoice;
 				}else{
 					currentBestMove = firstmove;
 				}
+				
+				currentLevel++;
 			}
 		}
 		
@@ -105,11 +185,10 @@ public class MoveCalculator {
 		 * Determines if current board is empty, and best move if it is
 		 * @return -1 if not empty board
 		 */
-		private int isEmptyBoard(){
+		protected int isEmptyBoard(){
 			if(!gameState.boardEmpty()){return -1;}
 			
-			//TODO make this determine best move on that board
-			return -1;
+			return (width/2) + 1;
 		}
 	}
 
