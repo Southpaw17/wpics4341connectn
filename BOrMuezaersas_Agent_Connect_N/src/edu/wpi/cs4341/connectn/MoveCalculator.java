@@ -83,13 +83,9 @@ public class MoveCalculator {
 								}
 							}
 							
+							
+							states.remove(0);
 						}
-						
-						states.remove(states.get(0));
-						if(states.size() == 0){
-							System.err.println("First remove resulted in zero");
-						}
-						
 					}else{
 						//TODO improve prune
 						int mean = 0;
