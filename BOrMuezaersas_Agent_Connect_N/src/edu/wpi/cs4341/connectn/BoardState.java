@@ -350,13 +350,14 @@ public class BoardState {
 			return indHeuristic;
 		}
 		
-		int max = MoveCalculator.NO_HEURISTIC;
+		/*int max = MoveCalculator.NO_HEURISTIC;
 		int temp = max;
 		int unusableCount = 0;
 		
 		for(int i = 0; i < children.length; i++){
 			if((children[i] != null)&&(!children[i].isPruned())){
 				temp = children[i].getGlobalHeuristic();
+				
 				if(max < temp){
 					max = temp;
 				}	
@@ -371,7 +372,46 @@ public class BoardState {
 			return indHeuristic;
 		}
 		
-		return max;
+		return max;*/
+		int nextLevel = -1;
+		
+		if(player == RefInterface.PLAYER){
+			//minimize
+			int min = 0;
+			
+			for(int i = 0; i < children.length; i++){
+				if(children[i] != null){
+					int nextGH = children[i].getGlobalHeuristic();
+					if((nextLevel == -1)||(min > nextGH)){
+						min = nextGH;
+						nextLevel = children[i].getAddedCol();
+					}
+				}
+			}
+			
+			if(nextLevel != -1){
+				return min;
+			}
+		}else{
+			//maximize
+			int max = 0;
+			
+			for(int i = 0; i < children.length; i++){
+				if(children[i] != null){
+					int nextGH = children[i].getGlobalHeuristic();
+					if((nextLevel == -1)||(max < nextGH)){
+						max = nextGH;
+						nextLevel = i;
+					}
+				}
+			}
+			
+			if(nextLevel != -1){
+				return max;
+			}
+		}
+		
+		return indHeuristic;
 	}
 	
 	/**
