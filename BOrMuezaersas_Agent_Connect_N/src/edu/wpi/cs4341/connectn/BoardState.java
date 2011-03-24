@@ -20,7 +20,14 @@ public class BoardState {
 	 */
 	public BoardState(int[][] newstate , int numinrow, int p, int addCol) {
 		added = addCol;
-		state = newstate;
+		state = new int[newstate.length][newstate[0].length];
+		
+		for(int i = 0; i < newstate.length; i++){
+			for(int j = 0; j < newstate[0].length; j++){
+				state[i][j] = newstate[i][j];
+			}
+		}
+		
 		heightmap = new int[state.length];
 		children = new BoardState[state.length];
 		player = p;
@@ -274,7 +281,13 @@ public class BoardState {
 		if (!checkMove(col))
 			return null;
 		
-		int[][] moved = state;
+		int[][] moved = new int[state.length][state[0].length];
+		
+		for(int i = 0; i < state.length; i++){
+			for(int j = 0; j < state[0].length; j++){
+				moved[i][j] = state[i][j];
+			}
+		}
 		
 		for (int i = 0; i < moved.length; i++) {
 			if ( moved[col][i] == 0 )
