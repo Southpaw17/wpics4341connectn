@@ -21,7 +21,7 @@ public class RefInterface{
 	private int width;
 	private int height;
 	private int n;
-	private int currentPlayer;			//the current player.  1
+	protected int currentPlayer;			//the current player.  1
 	private int timeLimit;				//Time limit in milliseconds
 	
 	private BufferedReader input;
@@ -45,7 +45,7 @@ public class RefInterface{
 	        calc.recieveMove(moveValue, PLAYER);
 	        //Send move
 	        System.out.print(String.valueOf(moveValue) + "\n");
-	        System.out.flush();     
+	        System.out.flush();
 		}
 	}
 	
@@ -73,7 +73,7 @@ public class RefInterface{
 		
 		moveExpiration = new Timer();
 		currentCalc = null;
-		calc = new MoveCalculator(height, width, n);  
+		calc = new MoveCalculator(height, width, n, currentPlayer);  
 	}
 	
 	/**
@@ -115,14 +115,15 @@ public class RefInterface{
                 }
 
                 // check for end
-                if (moveValue < 0){break;}
+                if (moveValue < 0){return;}
                 
                 //Record move
                 calc.recieveMove(moveValue, RefInterface.OPPONENT);
+                
             }
-
-            // switch turns
+            
             currentPlayer = -1*currentPlayer;
+
         }
 	}
 	
@@ -140,10 +141,5 @@ public class RefInterface{
 	 * @return The number in a row required to win
 	 */
 	public int getNumRequired(){return n;}
-	
-	/**
-	 * @return Returns the number of the current player 
-	 */
-	public int getCurrentPlayer(){return currentPlayer;}
 
 }
