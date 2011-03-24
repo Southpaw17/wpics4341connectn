@@ -15,7 +15,7 @@ public class MoveCalculator {
 	public static final int NO_HEURISTIC = -10000;
 	public static final int MAX_HEURISTIC = 9999;
 	
-	public MoveCalculator( int row, int col, int n ) {
+	public MoveCalculator( int row, int col, int n, int player ) {
 		width = col;
 		int[][] temp = new int[col][row];
 		
@@ -25,7 +25,7 @@ public class MoveCalculator {
 		
 		currentBestMove = 0;
 		
-		gameState = new BoardState(temp, n, RefInterface.PLAYER, -1);
+		gameState = new BoardState(temp, n, -player, -1);
 	}
 	
 	/** 
@@ -69,10 +69,6 @@ public class MoveCalculator {
 		@Override
 		public void run() {
 			try{
-				int firstmove = -1;
-				
-				firstmove = isEmptyBoard();
-				
 				while (canRun){
 					//Pick state to expand next
 					//expand state (or just get its children if expanded previously)
@@ -149,6 +145,10 @@ public class MoveCalculator {
 						currentLevel++;
 					}
 					
+					int firstmove = -1;
+					
+					firstmove = isEmptyBoard();
+					
 					//if the move hasn't already been decided (first move given to us)
 					if(firstmove == -1){
 						//update currentBestMove (make sure to check each state's pruning status as we go)
@@ -163,8 +163,10 @@ public class MoveCalculator {
 							
 							for(int i = 0; i < nextStates.length; i++){
 								if((nextStates[i] != null)&&(!nextStates[i].isPruned())){
-									if(currentHeuristic < nextStates[i].getGlobalHeuristic()){
+									int nextGH = nextStates[i].getGlobalHeuristic();
+									if(currentHeuristic < nextGH){
 										currentChoice = nextStates[i].getAddedCol();
+										currentHeuristic = nextGH;
 									}
 								}
 							}

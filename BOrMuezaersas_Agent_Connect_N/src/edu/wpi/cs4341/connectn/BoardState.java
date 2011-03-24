@@ -71,12 +71,37 @@ public class BoardState {
 	protected void calculateHeuristic(){
 		int[] positivePlayer = new int[3];
 		int[] negativePlayer = new int[3];
+		int[] holder = new int[3];
+		int rowZeroCount = 0;
 		
-		for ( int col = 0; col < state.length; col++ ){
-			for ( int row = 0; row < state[0].length; row++ )
-			{
-				positivePlayer = calcConnectionsFromLocation(col, row, RefInterface.PLAYER);
-				negativePlayer = calcConnectionsFromLocation(col, row, RefInterface.OPPONENT);
+		positivePlayer[0] = 0;
+		positivePlayer[1] = 0;
+		positivePlayer[2] = 0;
+		
+		negativePlayer[0] = 0;
+		negativePlayer[1] = 0;
+		negativePlayer[2] = 0;
+		
+		for (int col = 0; col < state.length; col++){
+			rowZeroCount = 0;
+			
+			for (int row = 0; row < state[0].length; row++){
+				if(state[col][row] == 0){rowZeroCount++;}
+				
+				//short circuit if no more pieces above us
+				if(rowZeroCount == state.length){
+					col = state.length;
+					break;
+				}
+				
+				holder = calcConnectionsFromLocation(col, row, RefInterface.PLAYER);
+				positivePlayer[0] += holder[0];
+				positivePlayer[1] += holder[1];
+				positivePlayer[2] += holder[2];
+				holder = calcConnectionsFromLocation(col, row, RefInterface.OPPONENT);
+				negativePlayer[0] += holder[0];
+				negativePlayer[1] += holder[1];
+				negativePlayer[2] += holder[2];
 			}
 		}
 		
@@ -209,7 +234,7 @@ public class BoardState {
 	public int getGlobalHeuristic(){
 		if(children == null){return indHeuristic;}
 		
-		int max = -MoveCalculator.NO_HEURISTIC;
+		int max = MoveCalculator.NO_HEURISTIC;
 		int temp = max;
 		int unusableCount = 0;
 		
@@ -217,15 +242,15 @@ public class BoardState {
 			if((children[i] != null)&&(!children[i].isPruned())){
 				temp = children[i].getGlobalHeuristic();
 				if(max < temp){
-					max = temp; 
-				}
+					max = temp;
+				}	
 			}else{
 				unusableCount++;
 			}
 		}
 		
 		if(max == MoveCalculator.NO_HEURISTIC){
-			if(unusableCount > 0){return -1*MoveCalculator.MAX_HEURISTIC;}
+			if(unusableCount < children.length){return -1*MoveCalculator.MAX_HEURISTIC;}
 			
 			return indHeuristic;
 		}
@@ -241,16 +266,11 @@ public class BoardState {
 	 * further.
 	 */
 	public void makeBabies( ){
-		boolean changed = false;
-		
 		for (int i = 0; i < state[0].length; i++) {
 			if(children[i] == null){
 				children[i] = makeMove(i, -player);
-				changed = true;
 			}
 		}
-		
-		if(changed){calculateHeuristic();}	// recalculates the heuristic for this state based on the heuristic values of its children
 	}
 	
 	/**
