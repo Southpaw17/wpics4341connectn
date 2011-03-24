@@ -38,11 +38,12 @@ public class RefInterface{
 		public void run() {
 			//stop thread
 	        if(currentCalc != null){currentCalc.CNstop();}
-	        
 	        //Get move
 			int moveValue = calc.getCurrentBestMove();
 			//Register our move with us
 	        calc.recieveMove(moveValue, PLAYER);
+	        //Wait for computations to finish
+	        try{currentCalc.join();}catch(Exception e){}
 	        //Send move
 	        System.out.print(String.valueOf(moveValue) + "\n");
 	        System.out.flush();
@@ -108,6 +109,9 @@ public class RefInterface{
                 // read move
                 try{
                 	moveValue = Integer.parseInt(input.readLine());
+                }catch(NumberFormatException n){
+                	System.err.println(ConnectNAgent.AGENT_NAME + " program ended unexpectedly on opponent's turn");
+                	moveValue = -1;
                 }catch(Exception e){
                 	System.err.println(ConnectNAgent.AGENT_NAME + " errored when parsing opponent move.  Stack trace:");
                 	e.printStackTrace(System.err);

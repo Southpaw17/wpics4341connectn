@@ -13,6 +13,9 @@ public class BoardState {
 	private int n;					//Number in  row
 	private int added;				//column added to to get this state
 	
+	private static final int NMTWO_MARK = 4;
+	private static final int NMONE_MARK = 2*Math.abs(NMTWO_MARK);
+	
 	/**
 	 * Initializes the State class with a predefined state
 	 * 
@@ -82,6 +85,18 @@ public class BoardState {
 		negativePlayer[1] = 0;
 		negativePlayer[2] = 0;
 		
+		//create two map and three map, to track number of discrete spots which result in two and threes,
+		//and how many moves it takes to get there
+		int[][] pMap = new int[state.length][state[0].length];
+		int[][] nMap = new int[state.length][state[0].length];
+		
+		for(int i = 0; i < state.length; i++){
+			for(int j = 0; j < state[0].length; j++){
+				pMap[i][j] = state[i][j];
+				nMap[i][j] = state[i][j];
+			}
+		}
+		
 		for (int col = 0; col < state.length; col++){
 			rowZeroCount = 0;
 			
@@ -94,14 +109,45 @@ public class BoardState {
 					break;
 				}
 				
-				holder = calcConnectionsFromLocation(col, row, RefInterface.PLAYER);
+				holder = calcConnectionsFromLocation(col, row, RefInterface.PLAYER, pMap);
 				positivePlayer[0] += holder[0];
 				positivePlayer[1] += holder[1];
 				positivePlayer[2] += holder[2];
-				holder = calcConnectionsFromLocation(col, row, RefInterface.OPPONENT);
+				holder = calcConnectionsFromLocation(col, row, RefInterface.OPPONENT, nMap);
 				negativePlayer[0] += holder[0];
 				negativePlayer[1] += holder[1];
 				negativePlayer[2] += holder[2];
+			}
+		}
+		
+		int pNMTwos = 0, pNMOnes = 0, nNMTwos = 0, nNMOnes = 0;      //Number of dicrete n-1 and n-2
+		int pbNMTwos = 0, pbNMOnes = 0, nbNMTwos = 0, nbNMOnes = 0;  //Number of spaces necessary to build all n-1 and n-2
+		
+		for(int i = 0; i < state.length; i++){
+			for(int j = 0; j < state[0].length; j++){
+				if(pMap[i][j] == NMTWO_MARK){
+					pNMTwos++;
+				}else if(pMap[i][j] == -1*NMTWO_MARK){
+					pbNMTwos++;
+				}
+				
+				if(nMap[i][j] == NMTWO_MARK){
+					nNMTwos++;
+				}else if(nMap[i][j] == -1*NMTWO_MARK){
+					nbNMTwos++;
+				}
+
+				if(pMap[i][j] == NMONE_MARK){
+					pNMOnes++;
+				}else if(pMap[i][j] == -1*NMONE_MARK){
+					pbNMOnes++;
+				}
+
+				if(nMap[i][j] == NMONE_MARK){
+					nNMOnes++;
+				}else if(nMap[i][j] == -1*NMONE_MARK){
+					nbNMOnes++;
+				}
 			}
 		}
 		
@@ -109,7 +155,10 @@ public class BoardState {
 		if((player > 0)&&(positivePlayer[2] > 0)){indHeuristic = MoveCalculator.MAX_HEURISTIC;}
 		else if((player < 0)&&(negativePlayer[2] > 0)){indHeuristic = -1*MoveCalculator.MAX_HEURISTIC;}
 		else{
+			//TODO possible mess with how the discrete number of threes and required moves to get them represented
 			indHeuristic = 10*positivePlayer[0] + 20*positivePlayer[1] - 10*negativePlayer[0] - 20*negativePlayer[1];
+			indHeuristic = indHeuristic + 4*pNMOnes + 2*pNMTwos + 2*nbNMOnes + nbNMTwos;
+			indHeuristic = indHeuristic - 4*nNMOnes - 2*nNMTwos - 2*pbNMOnes - pbNMTwos;
 		}
 	}
 	
@@ -119,12 +168,13 @@ public class BoardState {
 	 * @param startCol The starting column position 	[0, state.length]
 	 * @param startRow The started row position 		[0, state[0].length]
 	 * @param p The player to consider for 				(RefInterface.OPPONENT or RefInterface.PLAYER)
+	 * @param stateMap The copy of the board layout to mark
 	 * @return An array of connections:
 	 * 		ret[0] = number of n-2 length sequences which are able to create a sequence of n length
 	 * 		ret[1] = number of n-1 length sequences which are able to create a sequence of n length
 	 * 		ret[2] = number of n length sequences of n length
 	 */
-	protected int[] calcConnectionsFromLocation( int startCol, int startRow, int p){
+	protected int[] calcConnectionsFromLocation( int startCol, int startRow, int p, int[][] stateMap){
 		int[] retarr = new int[3];
 		
 		retarr[0] = 0;
@@ -133,22 +183,22 @@ public class BoardState {
 		
 		int[] holder = new int[3];
 		
-		holder = calcConnectionsInDirection(startCol, startRow, p, 0, 1);
+		holder = calcConnectionsInDirection(startCol, startRow, p, 0, 1, stateMap);
 		retarr[0] += holder[0];
 		retarr[1] += holder[1];
 		retarr[2] += holder[2];
 		
-		holder = calcConnectionsInDirection(startCol, startRow, p, 1, 1);
+		holder = calcConnectionsInDirection(startCol, startRow, p, 1, 1, stateMap);
 		retarr[0] += holder[0];
 		retarr[1] += holder[1];
 		retarr[2] += holder[2];
 		
-		holder = calcConnectionsInDirection(startCol, startRow, p, 1, 0);
+		holder = calcConnectionsInDirection(startCol, startRow, p, 1, 0, stateMap);
 		retarr[0] += holder[0];
 		retarr[1] += holder[1];
 		retarr[2] += holder[2];
 		
-		holder = calcConnectionsInDirection(startCol, startRow, p, 1, -1);
+		holder = calcConnectionsInDirection(startCol, startRow, p, 1, -1, stateMap);
 		retarr[0] += holder[0];
 		retarr[1] += holder[1];
 		retarr[2] += holder[2];
@@ -165,12 +215,13 @@ public class BoardState {
 	 * @param p The player to consider for 				(RefInterface.OPPONENT or RefInterface.PLAYER)
 	 * @param colDir The direction to move column-wise 	[-1, 0, 1]
 	 * @param rowDir The direction to move row-wise 	[-1, 0, 1]
+	 * @param stateMap The copy of the board layout to mark
 	 * @return An array of connections:
 	 * 		ret[0] = number of n-2 length sequences which are able to create a sequence of n length
 	 * 		ret[1] = number of n-1 length sequences which are able to create a sequence of n length
 	 * 		ret[2] = number of n length sequences of n length
 	 */
-	protected int[] calcConnectionsInDirection(int startCol, int startRow, int p, int colDir, int rowDir){
+	protected int[] calcConnectionsInDirection(int startCol, int startRow, int p, int colDir, int rowDir,  int[][] stateMap){
 		if(colDir != 0){colDir = colDir/Math.abs(colDir);}
 		
 		if(rowDir != 0){rowDir = rowDir/Math.abs(rowDir);}
@@ -198,16 +249,70 @@ public class BoardState {
 			row += rowDir;
 		}
 		
-		if (sequence == n - 2)
+		if (sequence == n - 2){
 			retarr[0]++;
-		else if ( sequence == n - 1)
+			for(int itNumber = 0; itNumber < n; itNumber++){
+				markMap(stateMap, NMTWO_MARK, col, row);
+				col += colDir;
+				row += rowDir;
+			}
+		}else if ( sequence == n - 1){
 			retarr[1]++;
-		else if (sequence == n)
+			for(int itNumber = 0; itNumber < n; itNumber++){
+				markMap(stateMap, NMONE_MARK, col, row);
+				col += colDir;
+				row += rowDir;
+			}
+		}else if (sequence == n){
 			retarr[2]++;
+		}
 		
 		return retarr;
 	}
 	
+	/**
+	 * Marks a map with n-2 and n-1 spots, giving priority to better spots
+	 * @param stateMap The stateMap to mark (is a copy of this state's layout)
+	 * @param mark the number ot mark with
+	 * @param col The col to start marking at
+	 * @param row The row to start marking at
+	 * @return -1 if did not mark due to better mark already in place, 0 if did not mark due to actual 
+	 * piece/border, 1 if marked
+	 */
+	private int markMap(int[][] stateMap, int mark, int col, int row){
+		try{
+			if((stateMap == null)||(row < 0)||(col < 0)||(col > stateMap.length)||(row > stateMap[0].length)){
+				return 0;
+			}
+			
+			if((stateMap[col][row] == 0)||((Math.abs(stateMap[col][row]) < Math.abs(mark))&&(Math.abs(stateMap[col][row]) != Math.abs(RefInterface.PLAYER)))){
+				int holder = stateMap[col][row];
+				stateMap[col][row] = mark;
+				int tempMark = mark;
+				
+				if(mark > 0){tempMark = -mark;}
+				
+				int retVal = markMap(stateMap, tempMark, col, row-1);
+				
+				if(retVal == -1){
+					stateMap[col][row] = holder;
+					return -1;
+				}
+				
+				return 1;
+			}else if(stateMap[col][row] > mark){
+				return -1;
+			}else{
+				return 0;
+			}
+		}catch(Exception e){
+			return -1;
+		}
+	}
+	
+	/**
+	 * @return true if the baord is empty, false otherwise
+	 */
 	public boolean boardEmpty(){
 		for(int i = 0; i < heightmap.length; i++){
 			if(heightmap[i] != 0){return false;}
@@ -233,6 +338,10 @@ public class BoardState {
 	 */
 	public int getGlobalHeuristic(){
 		if(children == null){return indHeuristic;}
+		
+		if(Math.abs(indHeuristic) == Math.abs(MoveCalculator.MAX_HEURISTIC)){
+			return indHeuristic;
+		}
 		
 		int max = MoveCalculator.NO_HEURISTIC;
 		int temp = max;
