@@ -44,7 +44,7 @@ public class RefInterface{
 			//Register our move with us
 	        calc.recieveMove(moveValue, PLAYER);
 	        //Send move
-	        System.out.println(String.valueOf(moveValue));
+	        System.out.print(String.valueOf(moveValue) + "\n");
 	        System.out.flush();     
 		}
 	}
@@ -95,7 +95,7 @@ public class RefInterface{
             	
                 //wait on started thread
                 try {
-					currentCalc.join();
+					currentCalc.join();	
 				} catch (Exception e) {
 					System.err.println(ConnectNAgent.AGENT_NAME + " crashed joining calc thread.  Stack Trace:");
 					e.printStackTrace(System.err);

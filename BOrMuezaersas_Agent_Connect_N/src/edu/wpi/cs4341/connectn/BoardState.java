@@ -223,7 +223,7 @@ public class BoardState {
 			return indHeuristic;
 		}
 		
-		return children[max].getGlobalHeuristic();
+		return max;
 	}
 	
 	/**

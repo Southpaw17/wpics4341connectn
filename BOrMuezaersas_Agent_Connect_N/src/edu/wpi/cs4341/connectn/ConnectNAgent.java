@@ -22,7 +22,7 @@ public class ConnectNAgent {
 		BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
 
 		// send player name
-	    System.out.println(AGENT_NAME);
+	    System.out.print(AGENT_NAME + "\n");
 	    System.out.flush();
 
 	    // read game config
