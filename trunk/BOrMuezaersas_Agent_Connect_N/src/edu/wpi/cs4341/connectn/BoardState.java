@@ -46,6 +46,10 @@ public class BoardState {
 		calculateHeuristic();
 	}
 	
+	public int getPlayer(){
+		return player;
+	}
+	
 	/**
 	 * Calculates a height map
 	 */
@@ -156,9 +160,12 @@ public class BoardState {
 		else if((player < 0)&&(negativePlayer[2] > 0)){indHeuristic = -1*MoveCalculator.MAX_HEURISTIC;}
 		else{
 			//TODO possible mess with how the discrete number of threes and required moves to get them represented
-			indHeuristic = 10*positivePlayer[0] + 20*positivePlayer[1] - 10*negativePlayer[0] - 20*negativePlayer[1];
-			indHeuristic = indHeuristic + 4*pNMOnes + 2*pNMTwos + 2*nbNMOnes + nbNMTwos;
-			indHeuristic = indHeuristic - 4*nNMOnes - 2*nNMTwos - 2*pbNMOnes - pbNMTwos;
+			//indHeuristic = 10*positivePlayer[0] + 20*positivePlayer[1] - 10*negativePlayer[0] - 20*negativePlayer[1];
+			//indHeuristic = indHeuristic + 4*pNMOnes + 2*pNMTwos + 2*nbNMOnes + nbNMTwos;
+			//indHeuristic = indHeuristic - 4*nNMOnes - 2*nNMTwos - 2*pbNMOnes - pbNMTwos;
+			indHeuristic = 2*positivePlayer[0] + 3*positivePlayer[1]*positivePlayer[1] - 2*negativePlayer[0] - 3*negativePlayer[1]*negativePlayer[1];
+			indHeuristic = indHeuristic + pNMOnes*pNMOnes*pNMOnes*pNMOnes/2 + pNMTwos*pNMTwos/2 + 2*nbNMOnes*nbNMOnes + 2*nbNMTwos;
+			indHeuristic = indHeuristic - nNMOnes*nNMOnes*nNMOnes*nNMOnes/2 - nNMTwos*nNMTwos/2 - 2*pbNMOnes*pbNMOnes - 2*pbNMTwos;
 		}
 	}
 	

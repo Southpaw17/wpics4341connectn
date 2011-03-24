@@ -12,8 +12,8 @@ public class MoveCalculator {
 	private BoardState gameState;			//The current state of the game
 	private static int currentBestMove;
 	private int width;
-	public static final int NO_HEURISTIC = -10000;
-	public static final int MAX_HEURISTIC = 9999;
+	public static final int NO_HEURISTIC = -30000;
+	public static final int MAX_HEURISTIC = 29999;
 	
 	public MoveCalculator( int row, int col, int n, int player ) {
 		width = col;
@@ -131,10 +131,11 @@ public class MoveCalculator {
 						}
 						
 						stdev /= (i-1);
+						stdev *= 4;
 						
 						for(int j = 0; j < i; j++){
 							if((states.get(j) != null)&&(states.get(j).getIndHeuristic() < (mean - stdev))){
-								states.get(j).prune();
+								if(states.get(j).getPlayer() == RefInterface.PLAYER){states.get(j).prune();}
 							}
 						}
 						
@@ -164,6 +165,7 @@ public class MoveCalculator {
 										currentChoice = nextStates[i].getAddedCol();
 										currentHeuristic = nextGH;
 									}
+									//System.out.println("C: " + nextStates[i].getAddedCol() + ", H: " + nextGH);
 								}
 							}
 						}
