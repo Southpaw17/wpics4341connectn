@@ -26,7 +26,7 @@ public class RefInterface{
 	
 	private BufferedReader input;
 	private Timer moveExpiration;
-	private CNThread currentCalc;
+	protected CNThread currentCalc;
 	private MoveCalculator calc;
 	
 	/**
@@ -92,6 +92,8 @@ public class RefInterface{
             	
                 //start thread
                 currentCalc = calc.run();
+                
+                currentCalc.start();
             	
                 //wait on started thread
                 try {
@@ -116,7 +118,7 @@ public class RefInterface{
                 if (moveValue < 0){break;}
                 
                 //Record move
-                calc.recieveMove(moveValue, currentPlayer);
+                calc.recieveMove(moveValue, RefInterface.OPPONENT);
             }
 
             // switch turns
