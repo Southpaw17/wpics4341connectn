@@ -18,11 +18,11 @@ public class RefInterface{
 	public static final int WRAPUP_TIME = 500;	//Milliseconds to assume necessary to wrap up move
 	
 	//Game data
-	private static int width;
-	private static int height;
-	private static int n;
-	private static int currentPlayer;			//the current player.  1
-	private static int timeLimit;				//Time limit in milliseconds
+	private int width;
+	private int height;
+	private int n;
+	private int currentPlayer;			//the current player.  1
+	private int timeLimit;				//Time limit in milliseconds
 	
 	private BufferedReader input;
 	private Timer moveExpiration;
@@ -127,21 +127,21 @@ public class RefInterface{
 	/**
 	 * @return The width of the game board
 	 */
-	public static int getBoardWidth(){return width;}
+	public int getBoardWidth(){return width;}
 	
 	/**
 	 * @return The height of the game board
 	 */
-	public static int getBoardHeight(){return height;}
+	public int getBoardHeight(){return height;}
 	
 	/**
 	 * @return The number in a row required to win
 	 */
-	public static int getNumRequired(){return n;}
+	public int getNumRequired(){return n;}
 	
 	/**
 	 * @return Returns the number of the current player 
 	 */
-	public static int getCurrentPlayer(){return currentPlayer;}
+	public int getCurrentPlayer(){return currentPlayer;}
 
 }

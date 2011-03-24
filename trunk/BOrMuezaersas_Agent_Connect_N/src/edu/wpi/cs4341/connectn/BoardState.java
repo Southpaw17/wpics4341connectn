@@ -3,36 +3,43 @@ package edu.wpi.cs4341.connectn;
 //This class stores the state of a game 
 public class BoardState {
 	
-	private int[][] state;			// stores the state
-	private BoardState[] children;	// stores the children of this state
-	private int indHeuristic;		// stores the (ABSOLUTE) heuristic value of this state
-	private int player;				// stores the player who just made the move (use this players perspective, this is result of this player making the move)
-	private int[] heightmap;    	// Simple cached map of height of columns to easily identify among a given state's children
+	private int[][] state;			//stores the state
+	private BoardState[] children;	//stores the children of this state
+	private int indHeuristic;		//stores the (ABSOLUTE) heuristic value of this state
+	private int player;				//stores the player who just made the move (use this players perspective, this is result of this player making the move)
+	private int[] heightmap;    	//Simple cached map of height of columns to easily identify among a given state's children
 	private boolean pruned;			//stores if this state was pruned from cosideration
 	private int level;				//stores the level of the tree this state is on
+	private int n;					//Number in  row
+	private int added;				//column added to to get this state
 	
 	/**
 	 * Initializes the State class with a predefined state
 	 * 
 	 * @param newstate - the state you want this state to store and evaluate
 	 */
-	public BoardState( int[][] newstate , int p) {
+	public BoardState(int[][] newstate , int numinrow, int p, int addCol) {
+		added = addCol;
 		state = newstate;
 		heightmap = new int[state.length];
 		children = new BoardState[state.length];
 		player = p;
 		pruned = false;
+		n = numinrow;
 		
 		heightmap = calculateHeightMap(state);
 		level = 0;
-		for(int i = 0; i < heightmap.length; i++){level += heightmap[i];}
+		for(int i = 0; i < heightmap.length; i++){
+			level += heightmap[i];
+			children[i] = null;
+		}
 		calculateHeuristic();
 	}
 	
 	/**
 	 * Calculates a height map
 	 */
-	private int[] calculateHeightMap(int[][] board){
+	protected int[] calculateHeightMap(int[][] board){
 		if(board == null){return null;}
 		
 		int[] tempheightmap = new int[heightmap.length];
@@ -54,14 +61,11 @@ public class BoardState {
 	/**
 	 * Calculates and stores the ABSOLUTE heuristic
 	 */
-	private void calculateHeuristic(){
-		// TODO add functionality to base heuristic on children
+	protected void calculateHeuristic(){
+		int[] positivePlayer = new int[3];
+		int[] negativePlayer = new int[3];
 		
-		int[] positivePlayer;
-		int[] negativePlayer;
-		
-		for ( int col = 0; col < state.length; col++ )
-		{
+		for ( int col = 0; col < state.length; col++ ){
 			for ( int row = 0; row < state[0].length; row++ )
 			{
 				positivePlayer = calcConnectionsFromLocation(col, row, RefInterface.PLAYER);
@@ -69,8 +73,12 @@ public class BoardState {
 			}
 		}
 		
-		// TODO ... (also, remember the heuristic is made relative to a player in the get heuristic function, this is calcing the absolute heuristic)
-		indHeuristic = 5;		
+		// TODO Imrpove heuristic (also, remember the heuristic is made relative to a player in the get heuristic function, this is calcing the absolute heuristic)
+		if((player > 0)&&(positivePlayer[2] > 0)){indHeuristic = MoveCalculator.MAX_HEURISTIC;}
+		else if((player < 0)&&(negativePlayer[2] > 0)){indHeuristic = -1*MoveCalculator.MAX_HEURISTIC;}
+		else{
+			indHeuristic = 10*positivePlayer[0] + 20*positivePlayer[1] - 10*negativePlayer[0] - 20*negativePlayer[1];
+		}
 	}
 	
 	
@@ -84,9 +92,7 @@ public class BoardState {
 	 * 		ret[1] = number of n-1 length sequences which are able to create a sequence of n length
 	 * 		ret[2] = number of n length sequences of n length
 	 */
-	private int[] calcConnectionsFromLocation( int startCol, int startRow, int p)
-	{
-		//int sequence = 0;
+	protected int[] calcConnectionsFromLocation( int startCol, int startRow, int p){
 		int[] retarr = new int[3];
 		
 		retarr[0] = 0;
@@ -132,9 +138,11 @@ public class BoardState {
 	 * 		ret[1] = number of n-1 length sequences which are able to create a sequence of n length
 	 * 		ret[2] = number of n length sequences of n length
 	 */
-	private int[] calcConnectionsInDirection(int startCol, int startRow, int p, int colDir, int rowDir){
-		colDir = colDir/Math.abs(colDir);
-		rowDir = rowDir/Math.abs(rowDir);
+	protected int[] calcConnectionsInDirection(int startCol, int startRow, int p, int colDir, int rowDir){
+		if(colDir != 0){colDir = colDir/Math.abs(colDir);}
+		
+		if(rowDir != 0){rowDir = rowDir/Math.abs(rowDir);}
+		
 		
 		int sequence = 0;
 		int[] retarr = new int[3];
@@ -143,26 +151,26 @@ public class BoardState {
 		retarr[1] = 0;
 		retarr[2] = 0;
 		
-		for ( int col = startCol; col < startCol + colDir*(RefInterface.getNumRequired() - 1); col=col+colDir ) {
-			for ( int row = startRow; row < startRow + rowDir*(RefInterface.getNumRequired() - 1); row=row+rowDir ) {
-				if ( col >= state.length || col <= 0 || row >= state[0].length || row <= 0 || state[col][row] == -p) {
-					col = startCol + colDir*(RefInterface.getNumRequired() - 1);
-					sequence = 0;
-					break;
-				}
-				
-				if (state[col][row] == p)
-				{
-					sequence++;
-				}
+		int col = startCol;
+		int row = startRow;
+		
+		for(int itNumber = 0; itNumber < n; itNumber++){
+			if ( col >= state.length || col < 0 || row >= state[0].length || row < 0 || state[col][row] == -p) {
+				sequence = 0;
+				break;
 			}
+			
+			if (state[col][row] == p){sequence++;}
+			
+			col += colDir;
+			row += rowDir;
 		}
 		
-		if ( sequence == RefInterface.getNumRequired() - 2 )
+		if (sequence == n - 2)
 			retarr[0]++;
-		else if ( sequence == RefInterface.getNumRequired() - 1 )
+		else if ( sequence == n - 1)
 			retarr[1]++;
-		else if (sequence == RefInterface.getNumRequired() )
+		else if (sequence == n)
 			retarr[2]++;
 		
 		return retarr;
@@ -194,8 +202,9 @@ public class BoardState {
 	public int getGlobalHeuristic(){
 		if(children == null){return indHeuristic;}
 		
-		int max = -10001;
+		int max = -MoveCalculator.NO_HEURISTIC;
 		int temp = max;
+		int unusableCount = 0;
 		
 		for(int i = 0; i < children.length; i++){
 			if((children[i] != null)&&(!children[i].isPruned())){
@@ -203,10 +212,16 @@ public class BoardState {
 				if(max < temp){
 					max = temp; 
 				}
+			}else{
+				unusableCount++;
 			}
 		}
 		
-		if(max == -10001){return indHeuristic;}
+		if(max == MoveCalculator.NO_HEURISTIC){
+			if(unusableCount > 0){return -1*MoveCalculator.MAX_HEURISTIC;}
+			
+			return indHeuristic;
+		}
 		
 		return children[max].getGlobalHeuristic();
 	}
@@ -218,13 +233,17 @@ public class BoardState {
 	 * to the move calculator to determine which should be persued
 	 * further.
 	 */
-	public void makeBabies( ) {
+	public void makeBabies( ){
+		boolean changed = false;
 		
 		for (int i = 0; i < state[0].length; i++) {
-			children[i] = makeMove( i, -player );
+			if(children[i] == null){
+				children[i] = makeMove(i, -player);
+				changed = true;
+			}
 		}
 		
-		calculateHeuristic();	// recalculates the heuristic for this state based on the heuristic values of its children
+		if(changed){calculateHeuristic();}	// recalculates the heuristic for this state based on the heuristic values of its children
 	}
 	
 	/**
@@ -252,8 +271,7 @@ public class BoardState {
 	 * @return - returns the state which would exist if the move was made, returns null if the move was illegal (i.e. the column was already full)
 	 */
 	public BoardState makeMove( int col, int player ) {
-		//TODO this should check if state exists/is child and find it
-		if ( !checkMove( col ) )
+		if (!checkMove(col))
 			return null;
 		
 		int[][] moved = state;
@@ -276,7 +294,7 @@ public class BoardState {
 			}
 		}
 		
-		return new BoardState(moved, player);
+		return new BoardState(moved, n, player, col);
 	}
 	
 	/**
@@ -293,6 +311,13 @@ public class BoardState {
 	 * @return true if this state is currently pruned, false otherwise
 	 */
 	public boolean isPruned(){return pruned;}
+	
+	/**
+	 * @return The col added to to get this move.  -1 if board is empty, else [0, board width]
+	 */
+	public int getAddedCol(){
+		return added;
+	}
 	
 	/**
 	 * @return The level of the tree this state is on
