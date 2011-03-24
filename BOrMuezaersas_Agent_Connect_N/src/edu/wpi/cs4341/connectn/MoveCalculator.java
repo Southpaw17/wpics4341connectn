@@ -78,14 +78,15 @@ public class MoveCalculator {
 							states.get(0).makeBabies();
 							BoardState[] expandedStates = states.get(0).getChildren();
 							if(expandedStates != null){
-								for(int i = 0; i < expandedStates.length; i++){
-									states.add(expandedStates[i]);
+								for(BoardState expand : expandedStates){
+									if(expand != null){
+										states.add(expand);
+									}
 								}
 							}
-							
-							
-							states.remove(0);
 						}
+						
+						states.remove(0);
 					}else{
 						//TODO improve prune
 						int mean = 0;
@@ -101,10 +102,7 @@ public class MoveCalculator {
 							if(states.get(i) == null){
 								states.remove(i);
 								removed++;
-								if(states.size() == 0){
-									//System.err.println("Second remove resulted in zero, " + removed + " removes");
-									break;
-								}
+								if(states.size() == 0){break;}
 								continue;
 							}
 							
@@ -117,7 +115,10 @@ public class MoveCalculator {
 									}else{
 										loop = false;
 									}	
-								}else{return;}
+								}else{
+									calculateMove();
+									return;
+								}
 							}
 							
 							if(stdev == -1){
@@ -135,60 +136,16 @@ public class MoveCalculator {
 						
 						for(int j = 0; j < i; j++){
 							if((states.get(j) != null)&&(states.get(j).getIndHeuristic() < (mean - stdev))){
-								if(states.get(j).getPlayer() == RefInterface.PLAYER){states.get(j).prune();}
+								if(states.get(j).getPlayer() == RefInterface.PLAYER){
+									states.get(j).prune();
+								}
 							}
 						}
 						
 						currentLevel++;
 					}
 					
-					int firstmove = -1;
-					
-					firstmove = isEmptyBoard();
-					
-					//if the move hasn't already been decided (first move given to us)
-					if(firstmove == -1){
-						//update currentBestMove (make sure to check each state's pruning status as we go)
-						//this should amount to comparing global hueristics
-						int currentChoice = -1;
-						
-						//loop through the GLOBAL heuristics of the game state's children and find max
-						BoardState[] nextStates = gameState.getChildren();
-						
-						if(nextStates != null){
-							int currentHeuristic = NO_HEURISTIC;
-							
-							for(int i = 0; i < nextStates.length; i++){
-								if((nextStates[i] != null)&&(!nextStates[i].isPruned())){
-									int nextGH = nextStates[i].getGlobalHeuristic();
-									if(currentHeuristic < nextGH){
-										currentChoice = nextStates[i].getAddedCol();
-										currentHeuristic = nextGH;
-									}
-									//System.out.println("C: " + nextStates[i].getAddedCol() + ", H: " + nextGH);
-								}
-							}
-						}
-						
-						if(currentChoice == -1){
-							//loop through game state "moves" and see if any legal, otherwise set = 0
-							BoardState[] moves = gameState.getChildren();
-							
-							if(moves != null){
-								for(int i = 0; i < moves.length; i++){
-									if(moves[i] != null){
-										currentChoice = moves[i].getAddedCol();
-									}
-								}
-							}
-							
-							currentChoice = 0;
-						}
-						
-						currentBestMove = currentChoice;
-					}else{
-						currentBestMove = firstmove;
-					}
+					calculateMove();
 					
 					//Somehow reached end of all paths???
 					if(states.size() == 0){return;}
@@ -197,6 +154,55 @@ public class MoveCalculator {
 				System.err.println(ConnectNAgent.AGENT_NAME + " encountered exception: ");
 				e.printStackTrace(System.err);
 				return;
+			}
+		}
+		
+		public void calculateMove(){
+			int firstmove = -1;
+			
+			firstmove = isEmptyBoard();
+			
+			//if the move hasn't already been decided (first move given to us)
+			if(firstmove == -1){
+				//update currentBestMove (make sure to check each state's pruning status as we go)
+				//this should amount to comparing global hueristics
+				int currentChoice = -1;
+				
+				//loop through the GLOBAL heuristics of the game state's children and find max
+				BoardState[] nextStates = gameState.getChildren();
+				
+				if(nextStates != null){
+					int currentHeuristic = NO_HEURISTIC;
+					
+					for(int i = 0; i < nextStates.length; i++){
+						if((nextStates[i] != null)&&(!nextStates[i].isPruned())){
+							int nextGH = nextStates[i].getGlobalHeuristic();
+							if(currentHeuristic < nextGH){
+								currentChoice = nextStates[i].getAddedCol();
+								currentHeuristic = nextGH;
+							}
+						}
+					}
+				}
+				
+				if(currentChoice == -1){
+					//loop through game state "moves" and see if any legal, otherwise set = 0
+					BoardState[] moves = gameState.getChildren();
+					
+					if(moves != null){
+						for(int i = 0; i < moves.length; i++){
+							if(moves[i] != null){
+								currentChoice = moves[i].getAddedCol();
+							}
+						}
+					}
+					
+					currentChoice = 0;
+				}
+				
+				currentBestMove = currentChoice;
+			}else{
+				currentBestMove = firstmove;
 			}
 		}
 		
