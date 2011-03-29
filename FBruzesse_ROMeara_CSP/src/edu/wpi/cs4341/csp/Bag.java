@@ -27,6 +27,9 @@ public class Bag {
 	/** @return An independent copy of this bag */
 	public Bag copyBag(){return new Bag(this);}
 	
+	/** @return The number of items in the bag */
+	public int getNumberItems(){return items.size();}
+	
 	/**
 	 * Attempts to add a given item to this bag
 	 * @param i The Item to add
