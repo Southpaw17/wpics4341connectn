@@ -7,8 +7,8 @@ import java.util.ArrayList;
  * @author Ryan O'Meara, Frank Bruzesse
  */
 public class Bag {
-	String bagLetter;				//Bag Label
-	ArrayList<Item> items;		//The items currently "in the bag"
+	String bagLetter;					//Bag Label
+	ArrayList<Item> items;				//The items currently "in the bag" 
 	
 	public Bag(String iBagLetter){
 		bagLetter = iBagLetter;
