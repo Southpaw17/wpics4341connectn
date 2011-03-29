@@ -30,6 +30,9 @@ public class Bag {
 	/** @return The number of items in the bag */
 	public int getNumberItems(){return items.size();}
 	
+	/** @return The label for this bag */
+	public String getBagName(){return bagLetter;}
+	
 	/**
 	 * Attempts to add a given item to this bag
 	 * @param i The Item to add
