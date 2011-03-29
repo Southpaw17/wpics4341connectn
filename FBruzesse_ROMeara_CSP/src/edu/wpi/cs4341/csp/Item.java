@@ -10,9 +10,22 @@ public class Item {
 	ArrayList<Constraint> constraints;
 	
 	public Item( int w ) {
-		
+		weight = w;
+		constraints = new ArrayList<Constraint>();
 	}
 	
+	/**
+	 * Adds a constraint to the item
+	 * 
+	 * @param con - the constraint to be added
+	 * @author Frank Bruzzese
+	 * 
+	 */
+	public void addConstraint( Constraint con ) {
+		constraints.add( con );
+	}
 	
-	
+	public void ApplyConstraints( BagHandler bagHandler ) {
+		
+	}
 }
