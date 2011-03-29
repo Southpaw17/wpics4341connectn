@@ -25,7 +25,7 @@ public class Item {
 		constraints.add( con );
 	}
 	
-	public void ApplyConstraints( BagHandler bagHandler ) {
+	public void applyConstraints( BagHandler bagHandler ) {
 		
 	}
 }
