@@ -14,9 +14,9 @@ public class CSPMain {
 		
 		
 		//compare and choose
-			//first, elimiate any which have both less weight and items
+			//first, eliminate any which have both less weight and items
 			//next, choose based on % wasted space
-			//if still tie, pick based on evenness of wieght distribution
+			//if still tie, pick based on evenness of weight distribution
 			//if STILL tie, pick based on evenness of item distribution
 			//if STILL tie, just pick one (honestly, they are essentially exactly equivalent at this point)
 	}
