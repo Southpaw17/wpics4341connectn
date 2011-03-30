@@ -8,10 +8,12 @@ import java.util.ArrayList;
  */
 public class Bag {
 	String bagLetter;					//Bag Label
+	int capacity;						//bag capacity
 	ArrayList<Item> items;				//The items currently "in the bag" 
 	
-	public Bag(String iBagLetter){
+	public Bag(String iBagLetter, int cap){
 		bagLetter = iBagLetter;
+		capacity = cap;
 		items = new ArrayList<Item>();
 	}
 	
@@ -32,6 +34,16 @@ public class Bag {
 	
 	/** @return The label for this bag */
 	public String getBagName(){return bagLetter;}
+	
+	public int getPossibleCapacity(){return capacity;}
+	
+	public int getRemainingCapacity(){
+		int used = 0;
+		
+		for(Item i : items){used += i.getWeight();}
+		
+		return getPossibleCapacity() - used; 
+	}
 	
 	/**
 	 * Attempts to add a given item to this bag

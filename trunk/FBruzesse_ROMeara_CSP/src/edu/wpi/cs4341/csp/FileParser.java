@@ -6,7 +6,11 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-
+/**
+ * Parses a file into useable objects
+ * 
+ * @author Ryan O'Meara, Frank Bruzesse
+ */
 public class FileParser {
 	BagHandler createdHandler;
 	ArrayList<Item> createdItems;
@@ -72,22 +76,32 @@ public class FileParser {
 		}
 	}
 	
-	public BagHandler getCreatedHandler(){
-		//TODO implement
-		return null;
-	}
+	/** @return The created bag handler */
+	public BagHandler getCreatedHandler(){return createdHandler;}
 	
-	public ArrayList<Item> getItems(){
-		//TODO implement
-		return null;
-	}
+	/** @return The arraylist of created items */
+	public ArrayList<Item> getItems(){return createdItems;}
 	
 	protected void processItemNameWeight(String line){
+		String[] inputs = line.split(" ");
 		
+		if(inputs.length != 2){return;}
+		
+		try{
+			Item add = new Item(inputs[0], Integer.parseInt(inputs[1]));
+			createdItems.add(add);
+		}catch(Exception e){/*If second one is not int*/}
 	}
 	
 	protected void processBagNameCap(String line){
+		String[] inputs = line.split(" ");
 		
+		if(inputs.length != 2){return;}
+		
+		try{
+			Bag add = new Bag(inputs[0], Integer.parseInt(inputs[1]));
+			createdHandler.addBag(add);
+		}catch(Exception e){/*If second one is not int*/}
 	}
 
 	protected void processFitLimits(String line){
