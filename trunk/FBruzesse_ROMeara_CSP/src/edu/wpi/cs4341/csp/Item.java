@@ -31,6 +31,10 @@ public class Item {
 		return weight;
 	}
 	
+	public int getNumConstraints(){
+		return constraints.size();
+	}
+	
 	/**
 	 * Adds a constraint to the item
 	 * 
