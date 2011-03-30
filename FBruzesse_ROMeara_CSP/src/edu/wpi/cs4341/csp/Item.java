@@ -11,12 +11,22 @@ import edu.wpi.cs4341.csp.constraints.Constraint;
  */
 public class Item {
 
+	String label;
 	int weight;
 	ArrayList<Constraint> constraints;
 	
-	public Item( int w ) {
+	public Item(String l, int w) {
+		label = l;
 		weight = w;
 		constraints = new ArrayList<Constraint>();
+	}
+	
+	public String getLabel(){
+		return label;
+	}
+	
+	public int getWeight(){
+		return weight;
 	}
 	
 	/**
