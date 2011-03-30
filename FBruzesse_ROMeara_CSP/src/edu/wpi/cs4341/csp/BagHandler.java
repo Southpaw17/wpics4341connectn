@@ -51,12 +51,12 @@ public class BagHandler {
 	/** @return whether this bag handler represents a "solved" bag set */
 	public boolean isValidSolution(){
 		Bag[] currentBags = new Bag[bags.size()];
-		Bag[] filteredBags;
+		ArrayList<Bag> filteredBags;
 		for(int i = 0; i < bags.size(); i++){currentBags[i] = bags.get(i);}
 		
 		for(Constraint c : validChecks){
 			filteredBags = c.apply(this, currentBags);
-			if(filteredBags.length < currentBags.length){return false;}
+			if(filteredBags.size() < currentBags.length){return false;}
 		}
 		
 		return true;

@@ -23,8 +23,6 @@ public class Item {
 	 * Adds a constraint to the item
 	 * 
 	 * @param con - the constraint to be added
-	 *
-	 * 
 	 */
 	public void addConstraint( Constraint con ) {
 		constraints.add( con );
@@ -36,11 +34,15 @@ public class Item {
 	 * @param bagHandler - The Bag Handler which stores all of the bags
 	 * @return An array of legal bags which this item can be placed in
 	 */
-	public Bag[] applyConstraints( BagHandler bagHandler ) {
-		Bag[] temp = bagHandler.getAllBags();
+	public ArrayList<Bag> applyConstraints( BagHandler bagHandler ) {
+		ArrayList<Bag> temp = new ArrayList<Bag>(); 
+		
+		for ( Bag bag : bagHandler.getAllBags() ){
+			temp.add( bag );
+		}
 		
 		for ( int i = 0; i < constraints.size(); i++ ){
-			temp = constraints.get( i ).apply( bagHandler, temp );
+			temp = constraints.get( i ).apply( bagHandler, temp.toArray( new Bag[temp.size()] ) );
 		}
 		
 		return temp;
