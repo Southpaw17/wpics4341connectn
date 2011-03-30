@@ -8,7 +8,7 @@ import edu.wpi.cs4341.csp.BagHandler;
 
 public class UnaryInclusive implements Constraint {
 
-	Bag[] bags;
+	String[] bags;
 	
 	@Override
 	public ArrayList<Bag> apply(BagHandler currentHandler, Bag[] currentBags) {
@@ -17,9 +17,9 @@ public class UnaryInclusive implements Constraint {
 		int counter = 0;	// keeps track of the number of items added to the array list
 		
 		for ( Bag cb : currentBags){
-			for (Bag bag : bags) {
-				if ( cb == bag ) {
-					temp.add( bag );
+			for (String bag : bags) {
+				if ( cb.getBagName().equals( bag ) ) {
+					temp.add( currentHandler.getBag( bag ) );
 					counter++;
 					break;
 				}
@@ -33,7 +33,7 @@ public class UnaryInclusive implements Constraint {
 		return temp;
 	}
 	
-	public UnaryInclusive( Bag[] b ) {
+	public UnaryInclusive( String[] b ) {
 		bags = b;
 	}
 
