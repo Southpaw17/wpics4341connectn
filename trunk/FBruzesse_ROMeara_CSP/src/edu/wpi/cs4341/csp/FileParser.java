@@ -6,6 +6,13 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 
+import edu.wpi.cs4341.csp.constraints.Equality;
+import edu.wpi.cs4341.csp.constraints.FitLimit;
+import edu.wpi.cs4341.csp.constraints.Inequality;
+import edu.wpi.cs4341.csp.constraints.MutuallyExclusivity;
+import edu.wpi.cs4341.csp.constraints.UnaryExclusive;
+import edu.wpi.cs4341.csp.constraints.UnaryInclusive;
+
 /**
  * Parses a file into useable objects
  * 
@@ -105,26 +112,120 @@ public class FileParser {
 	}
 
 	protected void processFitLimits(String line){
-	
+		String[] inputs = line.split(" ");
+		
+		if(inputs.length != 2){return;}
+		
+		try{
+			int low = Integer.parseInt(inputs[0]);
+			int high = Integer.parseInt(inputs[1]);
+			
+			createdHandler.addConstraint(new FitLimit(low, high));
+		}catch(Exception e){/*If items were not ints*/}
 	}
 
 	protected void processInclusiveUnary(String line){
-	
+		String[] inputs = line.split(" ");
+		
+		if(inputs.length < 2){return;}
+		
+		try{
+			String[] bags = new String[inputs.length - 1];
+			String item = inputs[0];
+			for(int i = 1; i < inputs.length; i++){
+				bags[i-1] = inputs[i];
+			}
+			
+			for(Item i: createdItems){
+				if(i.getLabel().equals(item)){
+					i.addConstraint(new UnaryInclusive(bags));
+					return;
+				}
+			}
+		}catch(Exception e){/*If items were not ints*/}
 	}
 
 	protected void processExclusiveUnary(String line){
-	
+		String[] inputs = line.split(" ");
+		
+		if(inputs.length < 2){return;}
+		
+		try{
+			String[] bags = new String[inputs.length - 1];
+			String item = inputs[0];
+			for(int i = 1; i < inputs.length; i++){
+				bags[i-1] = inputs[i];
+			}
+			
+			for(Item i: createdItems){
+				if(i.getLabel().equals(item)){
+					i.addConstraint(new UnaryExclusive(bags));
+					return;
+				}
+			}
+		}catch(Exception e){/*If items were not ints*/}
 	}
 
 	protected void processEqualBinary(String line){
-	
+		String[] inputs = line.split(" ");
+		
+		if(inputs.length != 2){return;}
+		
+		Item[] items = new Item[2];
+		
+		int i = 0;
+		
+		for(Item it : createdItems){
+			if(it.getLabel().equals(inputs[0])||it.getLabel().equals(inputs[1])){
+				items[i] = it;
+				i++;
+				if(i == 2){break;}
+			}
+		}
+		
+		items[0].addConstraint(new Equality(items[0], items[1]));
+		items[1].addConstraint(new Equality(items[0], items[1]));
 	}
 
 	protected void processNotEqualBinary(String line){
-	
+		String[] inputs = line.split(" ");
+		
+		if(inputs.length != 2){return;}
+		
+		Item[] items = new Item[2];
+		
+		int i = 0;
+		
+		for(Item it : createdItems){
+			if(it.getLabel().equals(inputs[0])||it.getLabel().equals(inputs[1])){
+				items[i] = it;
+				i++;
+				if(i == 2){break;}
+			}
+		}
+		
+		items[0].addConstraint(new Inequality(items[0], items[1]));
+		items[1].addConstraint(new Inequality(items[0], items[1]));
 	}
 
 	protected void processMutualExclusive(String line){
-	
+		String[] inputs = line.split(" ");
+		
+		if(inputs.length != 4){return;}
+		
+		Item[] items = new Item[2];
+		
+		int i = 0;
+		
+		for(Item it : createdItems){
+			if(it.getLabel().equals(inputs[0])||it.getLabel().equals(inputs[1])){
+				items[i] = it;
+				i++;
+				if(i == 2){break;}
+			}
+		}
+		
+		items[0].addConstraint(new MutuallyExclusivity(items[0], items[1], inputs[2], inputs[3]));
+		items[1].addConstraint(new MutuallyExclusivity(items[0], items[1], inputs[2], inputs[3]));
 	}
 }
