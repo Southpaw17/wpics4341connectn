@@ -2,6 +2,7 @@ package edu.wpi.cs4341.csp;
 
 import java.util.ArrayList;
 
+import edu.wpi.cs4341.csp.constraints.CanFit;
 import edu.wpi.cs4341.csp.constraints.Constraint;
 
 /**
@@ -19,6 +20,7 @@ public class Item {
 		label = l;
 		weight = w;
 		constraints = new ArrayList<Constraint>();
+		constraints.add(new CanFit(weight));
 	}
 	
 	public String getLabel(){
