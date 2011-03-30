@@ -15,6 +15,7 @@ public interface Constraint {
 	
 	/**
 	 * Applies this constraint to the set of bags using in given bag handler
+	 * Note: This function assumes the item is not currently in a bag
 	 * @param currentHandler The current bag handler (and set of bags)
 	 * @param currentBags TODO
 	 * @return The allowable set of bags
