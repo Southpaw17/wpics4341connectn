@@ -14,35 +14,22 @@ public class CSPMain {
 			ArrayList<Item> items = file.getItems();
 			BagHandler bagHandler = file.getCreatedHandler();
 			
-			determineSolution( bagHandler, items );
+			SetHandler setHandler = determineSolution( bagHandler, items );
+			
+			if ( setHandler != null ) {
+				// WE FRIGGEN FOUND IT BABY!
+				System.out.println( setHandler.toString() );
+			} else{
+				// NO SOLUTION
+				System.out.println("Our illusterious intellect has determined there is no possible solution.");
+			}
 			
 		}
 		else
 		{
-			System.err.print("Error: args is null.");
+			System.err.println("Error: args is null.");
 		}
 		
-		
-			
-		
-		//create starting set
-		
-		
-		//loop through all possible sets
-			//check if complete set
-				//if not, advance to next set
-					//update sets of items not placed to reflect this set
-					//choose next item to place
-					//place item
-					//check if complete set, if yes, mark bag handler as complete
-		
-		
-		//compare and choose
-			//first, eliminate any which have both less weight and items
-			//next, choose based on % wasted space
-			//if still tie, pick based on evenness of weight distribution
-			//if STILL tie, pick based on evenness of item distribution
-			//if STILL tie, just pick one (honestly, they are essentially exactly equivalent at this point)
 	}
 	
 	private static SetHandler determineSolution( BagHandler bagHandler, ArrayList<Item> items ) {
@@ -60,7 +47,7 @@ public class CSPMain {
 			}
 			
 			SetHandler handle[] = sHandle.getChildren();
-			if ( handle != null || handle.length == 0 )
+			if ( handle != null )
 			{
 				for (SetHandler sh : handle ) {
 					handlers.add( sh );
