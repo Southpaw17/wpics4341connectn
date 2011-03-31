@@ -11,12 +11,11 @@ public class CSPMain {
 		
 		if ( args != null && args.length > 0 )
 		{
-			file = new FileParser(args[0]);
+			file = new FileParser(args[0], new LeastBagsRemaining());
 			
-			ArrayList<Item> items = file.getItems();
-			BagHandler bagHandler = file.getCreatedHandler();
+			SetHandler sHandler = file.getCreatedHandler();
 			
-			SetHandler setHandler = determineSolution( bagHandler, items );
+			SetHandler setHandler = determineSolution(sHandler);
 			
 			if ( setHandler != null ) {
 				// WE FRIGGEN FOUND IT BABY!
@@ -34,14 +33,10 @@ public class CSPMain {
 		
 	}
 	
-	private static SetHandler determineSolution( BagHandler bagHandler, ArrayList<Item> items ) {
-		SetHandler setHandler = new SetHandler( items.toArray(new Item[items.size()]), bagHandler, new LeastBagsRemaining() );
-		
+	private static SetHandler determineSolution( SetHandler setHandler ) {
 		ArrayList<SetHandler> handlers = new ArrayList<SetHandler>();
 		
-		for (SetHandler sh : setHandler.getChildren() ) {
-			handlers.add( sh );
-		}
+		for (SetHandler sh : setHandler.getChildren() ) {handlers.add( sh );}
 		
 		ArrayList<SetHandler> toRemove = new ArrayList<SetHandler>();
 		ArrayList<SetHandler> toAdd = new ArrayList<SetHandler>();
@@ -65,13 +60,13 @@ public class CSPMain {
 	
 			}
 			
-			for(SetHandler fool : toRemove){
-				handlers.remove(fool);
-			}
+			for(SetHandler fool : toRemove){handlers.remove(fool);}
 			
-			for(SetHandler fool : toAdd){
-				handlers.add(fool);
-			}
+			toRemove.clear();
+			
+			for(SetHandler fool : toAdd){handlers.add(fool);}
+			
+			toAdd.clear();
 		}
 		
 		return null;

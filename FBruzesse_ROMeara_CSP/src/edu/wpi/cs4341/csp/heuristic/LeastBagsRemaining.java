@@ -3,13 +3,12 @@ package edu.wpi.cs4341.csp.heuristic;
 import java.util.ArrayList;
 
 import edu.wpi.cs4341.csp.Bag;
-import edu.wpi.cs4341.csp.BagHandler;
 import edu.wpi.cs4341.csp.Item;
 
 public class LeastBagsRemaining implements ItemHeuristic {
 
 	@Override
-	public Item selectItem(Item[] itemSet, BagHandler bagSet) {
+	public Item selectItem(Item[] itemSet, Bag[] bagSet) {
 		Item toPlace = itemSet[0];
 		ArrayList<Bag> possibleBags = itemSet[0].applyConstraints(bagSet);
 		

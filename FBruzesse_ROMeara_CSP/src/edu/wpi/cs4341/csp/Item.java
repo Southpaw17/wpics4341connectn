@@ -47,20 +47,20 @@ public class Item{
 	/**
 	 * Applies the constraints of this item to a list of available bags
 	 * 
-	 * @param bagHandler - The Bag Handler which stores all of the bags
+	 * @param allBags - The Bag Handler which stores all of the bags
 	 * @return An array of legal bags which this item can be placed in
 	 */
-	public ArrayList<Bag> applyConstraints( BagHandler bagHandler ) {
+	public ArrayList<Bag> applyConstraints( Bag[] allBags ) {
 		ArrayList<Bag> temp = new ArrayList<Bag>(); 
 		
-		for ( Bag bag : bagHandler.getAllBags() ){
+		for ( Bag bag : allBags ){
 			temp.add( bag );
 		}
 		
 		Bag[] currentBag = temp.toArray(new Bag[temp.size()]);
 		temp.clear();
 		for ( int i = 0; i < constraints.size(); i++ ){
-			currentBag = constraints.get( i ).apply( bagHandler, currentBag );
+			currentBag = constraints.get( i ).apply( allBags, currentBag );
 		}
 		
 		for(Bag b : currentBag){
