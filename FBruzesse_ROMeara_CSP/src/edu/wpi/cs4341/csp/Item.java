@@ -50,7 +50,7 @@ public class Item{
 	 * @param allBags - The Bag Handler which stores all of the bags
 	 * @return An array of legal bags which this item can be placed in
 	 */
-	public ArrayList<Bag> applyConstraints( Bag[] allBags ) {
+	public Bag[] applyConstraints( Bag[] allBags ) {
 		ArrayList<Bag> temp = new ArrayList<Bag>(); 
 		
 		for ( Bag bag : allBags ){
@@ -67,6 +67,6 @@ public class Item{
 			temp.add(b);
 		}
 		
-		return temp;
+		return temp.toArray(new Bag[temp.size()]);
 	}
 }
