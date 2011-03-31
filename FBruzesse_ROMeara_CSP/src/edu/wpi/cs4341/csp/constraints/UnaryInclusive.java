@@ -11,7 +11,7 @@ public class UnaryInclusive implements Constraint {
 	String[] bags;
 	
 	@Override
-	public ArrayList<Bag> apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
 
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		int counter = 0;	// keeps track of the number of items added to the array list
@@ -30,7 +30,7 @@ public class UnaryInclusive implements Constraint {
 		}
 		
 		
-		return temp;
+		return temp.toArray(new Bag[temp.size()]);
 	}
 	
 	public UnaryInclusive( String[] b ) {

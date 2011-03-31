@@ -12,7 +12,7 @@ public class Inequality implements Constraint {
 	Item first, second;
 	
 	@Override
-	public ArrayList<Bag> apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
 		
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		
@@ -24,7 +24,7 @@ public class Inequality implements Constraint {
 				
 		}
 		
-		return temp;
+		return temp.toArray(new Bag[temp.size()]);
 	}
 	
 	public Inequality( Item a, Item b ) {

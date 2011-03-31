@@ -17,6 +17,18 @@ public class BagHandler {
 		validChecks = new ArrayList<Constraint>();
 	}
 	
+	public BagHandler(BagHandler copy){
+		complete = copy.complete;
+		bags = new ArrayList<Bag>();
+		for(Bag b : copy.bags){
+			bags.add(b.copyBag());
+		}
+		validChecks = new ArrayList<Constraint>();
+		for(Constraint c : copy.validChecks){
+			validChecks.add(c);
+		}
+	}
+	
 	/**
 	 * Checks if this set is complete
 	 * @param items The items being put in bags
@@ -116,12 +128,7 @@ public class BagHandler {
 	
 	/** @return An independent copy of this bag handler */
 	public BagHandler copyHandler(){
-		BagHandler ret = new BagHandler();
-		
-		for(Constraint c : validChecks){ret.addConstraint(c);}
-		for(Bag b : bags){ret.addBag(b.copyBag());}
-		
-		return ret;
+		return new BagHandler(this);
 	}
 	
 	/**
@@ -140,12 +147,12 @@ public class BagHandler {
 	/** @return whether this bag handler represents a "solved" bag set */
 	public boolean isValidSolution(){
 		Bag[] currentBags = new Bag[bags.size()];
-		ArrayList<Bag> filteredBags;
+		Bag[] filteredBags;
 		for(int i = 0; i < bags.size(); i++){currentBags[i] = bags.get(i);}
 		
 		for(Constraint c : validChecks){
 			filteredBags = c.apply(this, currentBags);
-			if(filteredBags.size() < currentBags.length){return false;}
+			if(filteredBags.length < currentBags.length){return false;}
 		}
 		
 		return true;
