@@ -24,4 +24,8 @@ public class SetHandler {
 			itemSet.add(i);
 		}
 	}
+	
+	public SetHandler[] getChildren(){
+		return null;
+	}
 }
