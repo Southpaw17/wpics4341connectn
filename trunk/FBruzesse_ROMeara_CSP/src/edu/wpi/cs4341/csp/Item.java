@@ -57,8 +57,14 @@ public class Item {
 			temp.add( bag );
 		}
 		
+		Bag[] currentBag = temp.toArray(new Bag[temp.size()]);
+		temp.clear();
 		for ( int i = 0; i < constraints.size(); i++ ){
-			temp = constraints.get( i ).apply( bagHandler, temp.toArray( new Bag[temp.size()] ) );
+			currentBag = constraints.get( i ).apply( bagHandler, currentBag );
+		}
+		
+		for(Bag b : currentBag){
+			temp.add(b);
 		}
 		
 		return temp;

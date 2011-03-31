@@ -8,10 +8,12 @@ public class SetHandler {
 	ArrayList<Item> itemSet;
 	BagHandler bagSet;
 	ItemHeuristic iHeuristic;
+	ArrayList<String> steps;
 	
 	public SetHandler(Item[] items, BagHandler bags, ItemHeuristic iH){
 		bagSet = bags;
 		itemSet = new ArrayList<Item>();
+		steps = new ArrayList<String>();
 		iHeuristic = iH;
 		
 		for(Item i : items){
@@ -24,11 +26,21 @@ public class SetHandler {
 		
 		itemSet = new ArrayList<Item>();
 		
+		steps = new ArrayList<String>();
+		
 		iHeuristic = copy.iHeuristic;
 		
 		for(Item i : copy.itemSet){
 			itemSet.add(i);
 		}
+		
+		for(String s : copy.steps){
+			steps.add(s);
+		}
+	}
+	
+	public void addStep(String step){
+		steps.add(step);
 	}
 	
 	public SetHandler[] getChildren(){
@@ -50,7 +62,10 @@ public class SetHandler {
 		for(Bag b : possibleBags){
 			BagHandler newHand = bagSet.copyHandler();
 			newHand.getBag(b.getBagName()).addToBag(toPlace);
-			sets.add(new SetHandler(newSet.toArray(new Item[newSet.size()]), newHand, iHeuristic));
+			SetHandler newSH = new SetHandler(newSet.toArray(new Item[newSet.size()]), newHand, iHeuristic);
+			for(String s : steps){newSH.addStep(s);}
+			newSH.addStep(toPlace.getLabel() + " -> " + b.getBagName());
+			sets.add(newSH);
 		}
 		
 		if(sets.size() == 0){return null;}
@@ -85,6 +100,12 @@ public class SetHandler {
 			for(Item i : b.getItems()){
 				output += "\t" + i.getLabel() + "\n";
 			}
+		}
+		
+		output += "\nSteps\n";
+		
+		for(String s : steps){
+			output += "\t" + s + "\n";
 		}
 		
 		return output;

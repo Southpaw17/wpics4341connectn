@@ -13,7 +13,7 @@ public class MutuallyExclusivity implements Constraint {
 	String firstBag, secondBag;
 	
 	@Override
-	public ArrayList<Bag> apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
 		
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		
@@ -26,28 +26,28 @@ public class MutuallyExclusivity implements Constraint {
 				for ( Bag bag : currentBags ) {
 					if ( bag.getBagName().equals( second ) ) {
 						temp.remove( bag );
-						return temp;
+						return temp.toArray(new Bag[temp.size()]);
 					}
 				}
 				
-				return temp;
+				return temp.toArray(new Bag[temp.size()]);
 			} 
 			
 			if ( cb.getBagName().equals( second )  && ( cb.containsItem( first ) || cb.containsItem( second ) ) ) {
 				for ( Bag bag : currentBags ) {
 					if ( bag.getBagName().equals( first ) ) {
 						temp.remove( bag );
-						return temp;
+						return temp.toArray(new Bag[temp.size()]);
 					}
 				}
 				
-				return temp;
+				return temp.toArray(new Bag[temp.size()]);
 			}	
 			
 		}
 		
 		
-		return temp;
+		return temp.toArray(new Bag[temp.size()]);
 	}
 
 	public MutuallyExclusivity( Item f, Item s, String p, String q ) {

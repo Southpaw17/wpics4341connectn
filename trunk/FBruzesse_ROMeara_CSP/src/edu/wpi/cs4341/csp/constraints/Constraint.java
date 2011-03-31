@@ -4,7 +4,6 @@ package edu.wpi.cs4341.csp.constraints;
 
 import edu.wpi.cs4341.csp.Bag;
 import edu.wpi.cs4341.csp.BagHandler;
-import java.util.ArrayList;
 
 /**
  * Represents a given constraint for the bags
@@ -20,5 +19,5 @@ public interface Constraint {
 	 * @param currentBags TODO
 	 * @return The allowable set of bags
 	 */
-	public abstract ArrayList<Bag> apply(BagHandler currentHandler, Bag[] currentBags);
+	public abstract Bag[] apply(BagHandler currentHandler, Bag[] currentBags);
 }

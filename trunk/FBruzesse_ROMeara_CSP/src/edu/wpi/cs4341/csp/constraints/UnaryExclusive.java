@@ -11,7 +11,7 @@ public class UnaryExclusive implements Constraint {
 	String[] bags;
 	
 	@Override
-	public ArrayList<Bag> apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		
 		for ( Bag cb : currentBags ){
@@ -24,7 +24,7 @@ public class UnaryExclusive implements Constraint {
 		}
 		
 		
-		return temp;
+		return temp.toArray(new Bag[temp.size()]);
 	}
 	
 	public UnaryExclusive( String[] b ) {
