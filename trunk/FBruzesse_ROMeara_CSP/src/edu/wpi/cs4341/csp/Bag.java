@@ -7,16 +7,25 @@ import java.util.ArrayList;
  * @author Ryan O'Meara, Frank Bruzesse
  */
 public class Bag {
-	String bagLetter;					//Bag Label
-	int capacity;						//bag capacity
-	ArrayList<Item> items;				//The items currently "in the bag" 
+	protected String bagLetter;					//Bag Label
+	protected int capacity;						//bag capacity
+	protected ArrayList<Item> items;			//The items currently "in the bag" 
 	
+	/**
+	 * Creates a new, empty bag
+	 * @param iBagLetter The label for this bag
+	 * @param cap The weight capacity for this bag
+	 */
 	public Bag(String iBagLetter, int cap){
 		bagLetter = iBagLetter;
 		capacity = cap;
 		items = new ArrayList<Item>();
 	}
 	
+	/**
+	 * Copy constructor for this bag.  Completely copies the bag
+	 * @param copyBag The bag to copy
+	 */
 	public Bag(Bag copyBag){
 		bagLetter = copyBag.bagLetter;
 		capacity = copyBag.capacity;
@@ -27,6 +36,7 @@ public class Bag {
 		}
 	}
 	
+	/** @return An array of the items in this bag*/
 	public Item[] getItems(){
 		return items.toArray(new Item[items.size()]);
 	}
@@ -40,8 +50,10 @@ public class Bag {
 	/** @return The label for this bag */
 	public String getBagName(){return bagLetter;}
 	
+	/** @return The maximum capacity of the bag */
 	public int getPossibleCapacity(){return capacity;}
 	
+	/** @return The remaining capacity of the bag */
 	public int getRemainingCapacity(){
 		int used = 0;
 		

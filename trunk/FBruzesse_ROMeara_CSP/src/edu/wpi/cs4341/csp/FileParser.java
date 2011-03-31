@@ -12,6 +12,7 @@ import edu.wpi.cs4341.csp.constraints.Inequality;
 import edu.wpi.cs4341.csp.constraints.MutuallyExclusivity;
 import edu.wpi.cs4341.csp.constraints.UnaryExclusive;
 import edu.wpi.cs4341.csp.constraints.UnaryInclusive;
+import edu.wpi.cs4341.csp.heuristic.ItemHeuristic;
 
 /**
  * Parses a file into useable objects
@@ -19,13 +20,14 @@ import edu.wpi.cs4341.csp.constraints.UnaryInclusive;
  * @author Ryan O'Meara, Frank Bruzesse
  */
 public class FileParser {
-	BagHandler createdHandler;
+	SetHandler createdHandler;
 	ArrayList<Item> createdItems;
+	ArrayList<Bag> createdBags;
 	
-	public FileParser(String setupFile){
+	public FileParser(String setupFile, ItemHeuristic iH){
 		//parse the file
-		createdHandler = new BagHandler();
 		createdItems = new ArrayList<Item>();
+		createdBags = new ArrayList<Bag>();
 		
 		try{
 		    // Open the file that is the first 
@@ -78,16 +80,16 @@ public class FileParser {
 		    
 		    //Close the input stream
 		    in.close();
+		    
+		    //create the set handler
+		    createdHandler = new SetHandler(createdItems.toArray(new Item[createdItems.size()]), createdBags.toArray(new Bag[createdBags.size()]), iH);
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());
 		}
 	}
 	
 	/** @return The created bag handler */
-	public BagHandler getCreatedHandler(){return createdHandler;}
-	
-	/** @return The arraylist of created items */
-	public ArrayList<Item> getItems(){return createdItems;}
+	public SetHandler getCreatedHandler(){return createdHandler;}
 	
 	protected void processItemNameWeight(String line){
 		String[] inputs = line.split(" ");
@@ -107,7 +109,7 @@ public class FileParser {
 		
 		try{
 			Bag add = new Bag(inputs[0], Integer.parseInt(inputs[1]));
-			createdHandler.addBag(add);
+			createdBags.add(add);
 		}catch(Exception e){/*If second one is not int*/}
 	}
 

@@ -4,7 +4,6 @@ package edu.wpi.cs4341.csp.constraints;
 import java.util.ArrayList;
 
 import edu.wpi.cs4341.csp.Bag;
-import edu.wpi.cs4341.csp.BagHandler;
 import edu.wpi.cs4341.csp.Item;
 
 public class MutuallyExclusivity implements Constraint {
@@ -13,17 +12,17 @@ public class MutuallyExclusivity implements Constraint {
 	String firstBag, secondBag;
 	
 	@Override
-	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(Bag[] allBags, Bag[] currentSubsetBags) {
 		
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		
-		for ( Bag curr : currentBags ) {
+		for ( Bag curr : currentSubsetBags ) {
 			temp.add( curr );
 		}
 		
-		for ( Bag cb : currentHandler.getAllBags() ){
+		for ( Bag cb : allBags ){
 			if ( cb.getBagName().equals( firstBag )  && ( cb.containsItem( first ) || cb.containsItem( second ) ) ) {
-				for ( Bag bag : currentBags ) {
+				for ( Bag bag : currentSubsetBags ) {
 					if ( bag.getBagName().equals( second ) ) {
 						temp.remove( bag );
 						return temp.toArray(new Bag[temp.size()]);
@@ -34,7 +33,7 @@ public class MutuallyExclusivity implements Constraint {
 			} 
 			
 			if ( cb.getBagName().equals( second )  && ( cb.containsItem( first ) || cb.containsItem( second ) ) ) {
-				for ( Bag bag : currentBags ) {
+				for ( Bag bag : currentSubsetBags ) {
 					if ( bag.getBagName().equals( first ) ) {
 						temp.remove( bag );
 						return temp.toArray(new Bag[temp.size()]);

@@ -3,16 +3,15 @@ package edu.wpi.cs4341.csp.constraints;
 import java.util.ArrayList;
 
 import edu.wpi.cs4341.csp.Bag;
-import edu.wpi.cs4341.csp.BagHandler;
 
 public class CanFit implements Constraint {
 	int weight;
 	
 	@Override
-	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(Bag[] allBags, Bag[] currentSubsetBags) {
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		
-		for(Bag b : currentBags){
+		for(Bag b : currentSubsetBags){
 			if(b.getRemainingCapacity() >= weight){
 				temp.add(b);
 			}

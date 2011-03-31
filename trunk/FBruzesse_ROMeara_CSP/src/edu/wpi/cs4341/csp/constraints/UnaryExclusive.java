@@ -4,20 +4,19 @@ package edu.wpi.cs4341.csp.constraints;
 import java.util.ArrayList;
 
 import edu.wpi.cs4341.csp.Bag;
-import edu.wpi.cs4341.csp.BagHandler;
 
 public class UnaryExclusive implements Constraint {
 
 	String[] bags;
 	
 	@Override
-	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(Bag[] allBags, Bag[] currentSubsetBags) {
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		
-		for ( Bag cb : currentBags ){
+		for ( Bag cb : currentSubsetBags ){
 			for (String bag : bags) {
 				if ( !( cb.getBagName().equals( bag ) ) ) {
-					temp.add( currentHandler.getBag( bag ) );
+					temp.add( cb );
 					break;
 				}
 			}

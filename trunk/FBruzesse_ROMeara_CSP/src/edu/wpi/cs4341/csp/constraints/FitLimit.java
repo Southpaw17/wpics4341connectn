@@ -4,16 +4,15 @@ package edu.wpi.cs4341.csp.constraints;
 import java.util.ArrayList;
 
 import edu.wpi.cs4341.csp.Bag;
-import edu.wpi.cs4341.csp.BagHandler;
 
 public class FitLimit implements Constraint {
 	int lower, higher;
 	
 	@Override
-	public Bag[] apply(BagHandler currentHandler, Bag[] currentBags) {
+	public Bag[] apply(Bag[] allBags, Bag[] currentSubsetBags) {
 		ArrayList<Bag> temp = new ArrayList<Bag>();
 		
-		for(Bag b : currentBags){
+		for(Bag b : currentSubsetBags){
 			if((b.getNumberItems() >= lower)&&(b.getNumberItems() <= higher)){
 				temp.add(b);
 			}
