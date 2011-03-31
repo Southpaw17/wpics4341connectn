@@ -26,6 +26,10 @@ public class Bag {
 		}
 	}
 	
+	public Item[] getItems(){
+		return items.toArray(new Item[items.size()]);
+	}
+	
 	/** @return An independent copy of this bag */
 	public Bag copyBag(){return new Bag(this);}
 	

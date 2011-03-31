@@ -85,4 +85,19 @@ public class SetHandler {
 		bagSet.checkComplete(itemSet.toArray(new Item[itemSet.size()]));
 		return bagSet.isComplete();
 	}
+	
+	public String toString(){
+		String output = "";
+		
+		output += "Wasted Space: " + bagSet.wastedWeight() + "\n\n";
+		
+		for(Bag b : bagSet.getAllBags()){
+			output += b.getBagName() + "\n";
+			for(Item i : b.getItems()){
+				output += "\t" + i.getLabel() + "\n";
+			}
+		}
+		
+		return output;
+	}
 }
