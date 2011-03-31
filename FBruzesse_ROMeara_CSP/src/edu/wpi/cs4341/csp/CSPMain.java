@@ -33,7 +33,7 @@ public class CSPMain {
 	}
 	
 	private static SetHandler determineSolution( BagHandler bagHandler, ArrayList<Item> items ) {
-		SetHandler setHandler = new SetHandler( ((Item[])items.toArray()), bagHandler );
+		SetHandler setHandler = new SetHandler( items.toArray(new Item[items.size()]), bagHandler );
 		
 		ArrayList<SetHandler> handlers = new ArrayList<SetHandler>();
 		
