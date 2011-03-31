@@ -40,26 +40,24 @@ public class SetHandler {
 		for(Constraint c : copy.validChecks){validChecks.add(c);}
 	}
 	
+	/** @param step Adds the given line to the list of steps taken to get to this set */
 	public void addStep(String step){steps.add(step);}
+	
+	public boolean removeItem(Item i){
+		return itemSet.remove(i);
+	}
 	
 	public SetHandler[] getChildren(){
 		if((itemSet == null)||(itemSet.size() == 0)){return null;}
 		
 		Item toPlace = iHeuristic.selectItem(itemSet.toArray(new Item[itemSet.size()]), bagSet.toArray(new Bag[bagSet.size()]));
-		ArrayList<Bag> possibleBags = toPlace.applyConstraints(bagSet.toArray(new Bag[bagSet.size()]));
-		
-		ArrayList<Item> newSet = new ArrayList<Item>();
-		
-		for(Item i : itemSet){
-			if(!i.getLabel().equals(toPlace.getLabel())){
-				newSet.add(i);
-			}
-		}
+		Bag[] possibleBags = toPlace.applyConstraints(bagSet.toArray(new Bag[bagSet.size()]));
 		
 		ArrayList<SetHandler> sets = new ArrayList<SetHandler>();
 		
 		for(Bag b : possibleBags){
 			SetHandler newHand = new SetHandler(this);
+			newHand.removeItem(toPlace);
 			newHand.getBag(b.getBagName()).addToBag(toPlace);
 			newHand.addStep(toPlace.getLabel() + " -> " + b.getBagName());
 			sets.add(newHand);
@@ -84,28 +82,22 @@ public class SetHandler {
 	public void addConstraint(Constraint con){validChecks.add(con);}
 	
 	public boolean isValid(){
-		boolean isValid = true;
-		
-		Bag[] currentBags = new Bag[bagSet.size()];
+		Bag[] currentBags = bagSet.toArray(new Bag[bagSet.size()]);
 		Bag[] filteredBags;
-		for(int i = 0; i < bagSet.size(); i++){currentBags[i] = bagSet.get(i);}
 		
 		for(Constraint c : validChecks){
 			filteredBags = c.apply(bagSet.toArray(new Bag[bagSet.size()]), currentBags);
 			if(filteredBags.length < currentBags.length){return false;}
 		}
 		
-		isValid = true;
-		
 		for(Item i : itemSet){
-			if(i.applyConstraints(bagSet.toArray(new Bag[bagSet.size()])).size() == 0){isValid = false;}
+			if(i.applyConstraints(bagSet.toArray(new Bag[bagSet.size()])).length == 0){return false;}
 		}
 		
-		return isValid;
+		return true;
 	}
 	
 	public boolean isComplete(){
-		
 			boolean found = false;
 			
 			for(Item i : itemSet){
@@ -120,9 +112,7 @@ public class SetHandler {
 				
 				if(!found){
 					//if still possible sets, not complete, exit
-					if(i.applyConstraints(bagSet.toArray(new Bag[bagSet.size()])).size() > 0){
-						return false;
-					}
+					if(i.applyConstraints(bagSet.toArray(new Bag[bagSet.size()])).length > 0){return false;}
 				}
 			}
 			
