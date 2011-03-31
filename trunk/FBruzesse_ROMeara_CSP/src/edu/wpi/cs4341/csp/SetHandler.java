@@ -19,8 +19,9 @@ public class SetHandler {
 		bagSet = new ArrayList<Bag>();
 		itemSet = new ArrayList<Item>();
 		steps = new ArrayList<String>();
-		iHeuristic = iH;
 		validChecks = new ArrayList<Constraint>();
+		iHeuristic = iH;
+		
 		
 		for(Item i : items){itemSet.add(i);}
 		for(Bag b : bags){bagSet.add(b);}

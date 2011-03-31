@@ -52,6 +52,7 @@ public class FileParser {
 		    			break;
 		    		case 2:
 		    			processBagNameCap(strLine);
+		    			createdHandler = new SetHandler(createdItems.toArray(new Item[createdItems.size()]), createdBags.toArray(new Bag[createdBags.size()]), iH);
 		    			break;
 		    		case 3:
 		    			processFitLimits(strLine);
@@ -82,7 +83,6 @@ public class FileParser {
 		    in.close();
 		    
 		    //create the set handler
-		    createdHandler = new SetHandler(createdItems.toArray(new Item[createdItems.size()]), createdBags.toArray(new Bag[createdBags.size()]), iH);
 		}catch (Exception e){//Catch exception if any
 			System.err.println("Error: " + e.getMessage());
 		}
