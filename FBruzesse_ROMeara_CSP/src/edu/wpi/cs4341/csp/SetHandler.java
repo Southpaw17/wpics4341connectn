@@ -64,6 +64,8 @@ public class SetHandler {
 			sets.add(new SetHandler(newSet.toArray(new Item[newSet.size()]), newHand));
 		}
 		
+		if(sets.size() == 0){return null;}
+		
 		return sets.toArray(new SetHandler[sets.size()]);
 	}
 	
