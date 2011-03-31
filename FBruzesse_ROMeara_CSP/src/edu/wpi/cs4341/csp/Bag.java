@@ -68,5 +68,11 @@ public class Bag {
 	 * @param i The Item to search for
 	 * @return true if this bag currently contains this item
 	 */
-	public boolean containsItem(Item i){return items.contains(i);}
+	public boolean containsItem(Item i){
+		for(Item j : items){
+			if(j.getLabel().equals(i.getLabel())){return true;}
+		}
+		
+		return false;
+	}
 }

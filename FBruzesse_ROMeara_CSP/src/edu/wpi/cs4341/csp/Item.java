@@ -10,7 +10,7 @@ import edu.wpi.cs4341.csp.constraints.Constraint;
  * @author Frank Bruzzese
  *
  */
-public class Item {
+public class Item{
 
 	String label;
 	int weight;
