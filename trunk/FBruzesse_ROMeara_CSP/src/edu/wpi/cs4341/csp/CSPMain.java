@@ -41,22 +41,35 @@ public class CSPMain {
 			handlers.add( sh );
 		}
 		
-		for ( SetHandler sHandle : handlers ) {
-			if ( sHandle.isComplete() && sHandle.isValid() ) {
-				return sHandle;
-			}
-			
-			SetHandler handle[] = sHandle.getChildren();
-			if ( handle != null )
-			{
-				for (SetHandler sh : handle ) {
-					handlers.add( sh );
-				
+		ArrayList<SetHandler> toRemove = new ArrayList<SetHandler>();
+		ArrayList<SetHandler> toAdd = new ArrayList<SetHandler>();
+		
+		while(handlers.size() > 0){
+			for ( SetHandler sHandle : handlers ) {
+				if ( sHandle.isComplete() && sHandle.isValid() ) {
+					return sHandle;
 				}
+				
+				SetHandler handle[] = sHandle.getChildren();
+				if ( handle != null )
+				{
+					for (SetHandler sh : handle ) {
+						toAdd.add( sh );
+					
+					}
+				}
+				
+				toRemove.add( sHandle );
+	
 			}
 			
-			handlers.remove( sHandle );
-
+			for(SetHandler fool : toRemove){
+				handlers.remove(fool);
+			}
+			
+			for(SetHandler fool : toAdd){
+				handlers.add(fool);
+			}
 		}
 		
 		return null;

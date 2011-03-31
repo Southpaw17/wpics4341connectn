@@ -19,6 +19,7 @@ public class Bag {
 	
 	public Bag(Bag copyBag){
 		bagLetter = copyBag.bagLetter;
+		capacity = copyBag.capacity;
 		items = new ArrayList<Item>();
 		
 		for(Item nextItem : copyBag.items){
