@@ -40,7 +40,7 @@ public class FileParser {
 		    
 		    //Read File Line By Line
 		    while ((strLine = br.readLine()) != null)   {
-		    	if(strLine.equals("#####")){
+		    	if(strLine.trim().startsWith("#####")){
 		    		//new section
 		    		currentSection++;
 		    	}else{
