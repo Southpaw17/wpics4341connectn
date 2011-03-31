@@ -69,6 +69,8 @@ public class SetHandler {
 		return sets.toArray(new SetHandler[sets.size()]);
 	}
 	
+	public BagHandler getBagHandler(){return bagSet;}
+	
 	public boolean isValid(){
 		boolean isValid = bagSet.isValidSolution();
 		
