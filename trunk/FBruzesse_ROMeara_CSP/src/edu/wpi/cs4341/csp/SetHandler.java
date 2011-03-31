@@ -92,7 +92,7 @@ public class SetHandler {
 		output += "Wasted Space: " + bagSet.wastedWeight() + "\n\n";
 		
 		for(Bag b : bagSet.getAllBags()){
-			output += b.getBagName() + "\n";
+			output += b.getBagName() + ", Num Items: " + b.getNumberItems() + ", Total Weight: " + (b.getPossibleCapacity() - b.getRemainingCapacity()) + "\n";
 			for(Item i : b.getItems()){
 				output += "\t" + i.getLabel() + "\n";
 			}
