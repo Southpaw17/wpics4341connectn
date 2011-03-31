@@ -1,0 +1,290 @@
+File 1
+
+Wasted Space: 7
+
+p
+	C
+	D
+	E
+	J
+	K
+q
+	F
+	G
+	H
+	I
+	L
+
+
+C -> p
+D -> p
+E -> p
+F -> q
+G -> q
+H -> q
+I -> q
+J -> p
+L -> q
+K -> p
+
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+6    		|6   		|3
+
+
+File 2
+
+Wasted Space: 3
+
+p
+	D
+	J
+	F
+q
+	C
+	K
+	G
+r
+	H
+	I
+x
+	L
+	E
+
+
+C -> q
+D -> p
+K -> q
+J -> p
+G -> q
+H -> r
+L -> x
+F -> p
+I -> r
+E -> x
+
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+18    		|3   		|6
+
+
+File 3
+
+Wasted Space: 3
+
+p
+	H
+	J
+q
+	G
+	C
+	D
+r
+	F
+	I
+	K
+x
+	E
+	L
+
+
+E -> x
+G -> q
+H -> p
+J -> p
+F -> r
+I -> r
+C -> q
+L -> x
+D -> q
+K -> r
+
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+9    		|3   		|0
+
+
+File 4
+
+Wasted Space: 3
+
+p
+	J
+	L
+	D
+q
+	G
+	E
+	K
+r
+	H
+	I
+x
+	C
+	F
+
+
+J -> p
+L -> p
+G -> q
+H -> r
+I -> r
+C -> x
+E -> q
+F -> x
+D -> p
+K -> q
+
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+40    		|3   		|0
+
+
+File 5
+
+Wasted Space: 3
+
+p
+	G
+	F
+	I
+q
+	J
+	C
+r
+	H
+	D
+	E
+x
+	L
+	K
+
+
+G -> p
+J -> q
+F -> p
+H -> r
+L -> x
+I -> p
+C -> q
+D -> r
+K -> x
+E -> r
+
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+12    		|3   		|6
+
+
+File 6
+
+Wasted Space: 3
+
+p
+	G
+	H
+	E
+q
+	J
+	K
+r
+	F
+	L
+	D
+x
+	I
+	C
+
+
+G -> p
+J -> q
+F -> r
+H -> p
+I -> x
+L -> r
+C -> x
+K -> q
+E -> p
+D -> r
+
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+25    		|3   		|3
+
+File 7
+
+No way, no how.  Sorry.  Least you have a chance to escape the law
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+37    		|15   		|9
+
+
+File 8
+
+No way, no how.  Sorry.  Least you have a chance to escape the law
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+34    		|3   		|3
+
+
+File 9
+
+Wasted Space: 3
+
+p
+	J
+	L
+	D
+q
+	G
+	C
+	K
+r
+	H
+	I
+x
+	E
+	F
+
+
+E -> x
+G -> q
+H -> r
+I -> r
+C -> q
+J -> p
+L -> p
+F -> x
+D -> p
+K -> q
+
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+9    		|3   		|3
+
+File 10
+
+No way, no how.  Sorry.  Least you have a chance to escape the law
+
+Time to calculate in milliseconds, avg of 5 runs with each: 
+BT Only		|BT + H		|BT + H + (FC/AC)
+---------------------------------------------------
+40    		|3   		|3
