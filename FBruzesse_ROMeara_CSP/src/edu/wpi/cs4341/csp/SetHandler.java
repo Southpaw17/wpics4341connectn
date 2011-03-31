@@ -2,13 +2,17 @@ package edu.wpi.cs4341.csp;
 
 import java.util.ArrayList;
 
+import edu.wpi.cs4341.csp.heuristic.ItemHeuristic;
+
 public class SetHandler {
 	ArrayList<Item> itemSet;
 	BagHandler bagSet;
+	ItemHeuristic iHeuristic;
 	
-	public SetHandler(Item[] items, BagHandler bags){
+	public SetHandler(Item[] items, BagHandler bags, ItemHeuristic iH){
 		bagSet = bags;
 		itemSet = new ArrayList<Item>();
+		iHeuristic = iH;
 		
 		for(Item i : items){
 			itemSet.add(i);
@@ -20,6 +24,8 @@ public class SetHandler {
 		
 		itemSet = new ArrayList<Item>();
 		
+		iHeuristic = copy.iHeuristic;
+		
 		for(Item i : copy.itemSet){
 			itemSet.add(i);
 		}
@@ -28,25 +34,8 @@ public class SetHandler {
 	public SetHandler[] getChildren(){
 		if((itemSet == null)||(itemSet.size() == 0)){return null;}
 		
-		Item toPlace = itemSet.get(0);
-		ArrayList<Bag> possibleBags = itemSet.get(0).applyConstraints(bagSet);
-		
-		//find item to place
-		for(int i = 1; i < itemSet.size(); i++){
-			ArrayList<Bag> temp = itemSet.get(i).applyConstraints(bagSet);
-			if((temp.size() != 0)&&(temp.size() < possibleBags.size())){
-				toPlace = itemSet.get(i);
-				possibleBags = temp;
-			}else if(temp.size() == possibleBags.size()){
-				if(itemSet.get(i).getNumConstraints() < toPlace.getNumConstraints()){
-					toPlace = itemSet.get(i);
-					possibleBags = temp;
-				}
-			}else if((temp.size() != 0)&&(possibleBags.size() == 0)){
-				toPlace = itemSet.get(i);
-				possibleBags = temp;
-			}
-		}
+		Item toPlace = iHeuristic.selectItem(itemSet.toArray(new Item[itemSet.size()]), bagSet);
+		ArrayList<Bag> possibleBags = toPlace.applyConstraints(bagSet);
 		
 		ArrayList<Item> newSet = new ArrayList<Item>();
 		
@@ -61,7 +50,7 @@ public class SetHandler {
 		for(Bag b : possibleBags){
 			BagHandler newHand = bagSet.copyHandler();
 			newHand.getBag(b.getBagName()).addToBag(toPlace);
-			sets.add(new SetHandler(newSet.toArray(new Item[newSet.size()]), newHand));
+			sets.add(new SetHandler(newSet.toArray(new Item[newSet.size()]), newHand, iHeuristic));
 		}
 		
 		if(sets.size() == 0){return null;}

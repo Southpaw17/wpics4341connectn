@@ -2,6 +2,8 @@ package edu.wpi.cs4341.csp;
 
 import java.util.ArrayList;
 
+import edu.wpi.cs4341.csp.heuristic.LeastBagsRemaining;
+
 public class CSPMain {
 	public static void main(String[] args){
 		
@@ -33,7 +35,7 @@ public class CSPMain {
 	}
 	
 	private static SetHandler determineSolution( BagHandler bagHandler, ArrayList<Item> items ) {
-		SetHandler setHandler = new SetHandler( items.toArray(new Item[items.size()]), bagHandler );
+		SetHandler setHandler = new SetHandler( items.toArray(new Item[items.size()]), bagHandler, new LeastBagsRemaining() );
 		
 		ArrayList<SetHandler> handlers = new ArrayList<SetHandler>();
 		
